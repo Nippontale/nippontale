@@ -12,6 +12,6 @@ use amethyst::{
 mod utils;
 
 fn main() -> amethyst::Result<()> {
-    // dostuff
+    amethyst::start_logger(Default::default());
     Ok(())
 }
