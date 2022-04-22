@@ -40,7 +40,7 @@ impl From<Handle<Image>> for MainCharacter {
         MainCharacter {
             player_controlled:  
             PlayerControlled { controlled: true }, 
-            transform: Transform::from_xyz(100., 0., 0.), 
+            transform: Transform::from_xyz(200., 100., 0.), 
             texture, 
             size: HitboxSize { size: Size { width: 128., height: 128. } }, // size for collision calculation 
             //TODO: system to update size based on sprite size 
@@ -56,7 +56,7 @@ impl From<Handle<Image>> for MainCharacter {
 /// 2. Implement better collisions
 pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>, 
     mut ply: Query<(&mut Transform, &PlayerControlled, &Moving, &Sprite, &HitboxSize)>, 
-    mut other: Query<(&Transform, &HitboxSize)>) {
+    mut other: Query<(&Transform, &HitboxSize), Without<PlayerControlled>>) {
     for (mut tr, pc, mv, sp, hbsize) in ply.iter_mut() {
         if pc.controlled {
             let mut ydelta = 0f32;
@@ -76,13 +76,15 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             let prev = (tr.translation.x, tr.translation.y);
             tr.translation.y += (ydelta*mv.maxspeed);
             tr.translation.x += (xdelta*mv.maxspeed); // replace both mv.maxspeed with mv.speed and impl acceleration
-            for (otr, ohbsize) in other.iter_mut() {
-                if touching((hbsize, &tr), (ohbsize, otr)) {
-                    tr.translation.x = prev.0;
-                    tr.translation.y = prev.1;
-                    break;
+            if (xdelta != 0. || ydelta != 0.) {
+                for (otr, ohbsize) in other.iter_mut() {
+                    if touching((hbsize, &tr), (ohbsize, otr)) || touching((ohbsize, otr), (hbsize, &tr)) {
+                        tr.translation.x = prev.0;
+                        tr.translation.y = prev.1;
+                        break;
+                    }
                 }
-            }
+            }  
         }
     }
 }
