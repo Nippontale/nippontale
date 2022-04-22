@@ -1,0 +1,4 @@
+(
+    title: "NIPPONTALE",
+    dimensions: Some((600, 600)),
+)

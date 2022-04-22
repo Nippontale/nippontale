@@ -440,6 +440,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
+name = "ash"
+version = "0.29.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "003d1fb2eb12eb06d4a03dbe02eea67a9fac910fa97932ab9e3a75b96a1ea5e5"
+dependencies = [
+ "shared_library",
+]
+
+[[package]]
 name = "atom"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1349,6 +1358,27 @@ dependencies = [
  "proc-macro2 1.0.37",
  "quote 1.0.18",
  "syn 1.0.91",
+]
+
+[[package]]
+name = "gfx-backend-vulkan"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5facf0b6e4306a6a93682077f85602c89b49aca8ecceb73b9558e7baa37f8c54"
+dependencies = [
+ "ash",
+ "byteorder",
+ "core-graphics 0.17.3",
+ "derivative 1.0.4",
+ "gfx-hal",
+ "lazy_static",
+ "log",
+ "objc",
+ "raw-window-handle 0.1.2",
+ "smallvec 0.6.14",
+ "winapi",
+ "winit",
+ "x11",
 ]
 
 [[package]]
@@ -2710,6 +2740,15 @@ dependencies = [
 
 [[package]]
 name = "raw-window-handle"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af3d3b2e1053b3ff2171efc29a8bff3439ce6b2ce6a0432695134bc1c7ff8e87"
+dependencies = [
+ "libc",
+]
+
+[[package]]
+name = "raw-window-handle"
 version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e28f55143d0548dad60bb4fbdc835a3d7ac6acc3324506450c5fdd6e42903a76"
@@ -3054,6 +3093,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aa01882dc9f3f64684393724d0d49d2315b612eeeb029eded2181385d796c75f"
 dependencies = [
  "derivative 1.0.4",
+ "gfx-backend-vulkan",
  "gfx-hal",
  "lazy_static",
  "log",
@@ -3314,6 +3354,16 @@ checksum = "2c4ccb6d0d32d277d3ef7dea86203d8210945eb7a45fba89dd445b3595dd0dfc"
 dependencies = [
  "cmake",
  "pkg-config",
+]
+
+[[package]]
+name = "shared_library"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a9e7e0f2bfae24d8a5b5a66c5b257a83c7412304311512a0c054cd5e619da11"
+dependencies = [
+ "lazy_static",
+ "libc",
 ]
 
 [[package]]
@@ -3906,6 +3956,16 @@ dependencies = [
  "wayland-client",
  "winapi",
  "x11-dl",
+]
+
+[[package]]
+name = "x11"
+version = "2.19.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6dd0565fa8bfba8c5efe02725b14dff114c866724eff2cfd44d76cea74bcd87a"
+dependencies = [
+ "libc",
+ "pkg-config",
 ]
 
 [[package]]

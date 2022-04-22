@@ -12,6 +12,8 @@ use amethyst::{
 mod utils;
 
 fn main() -> amethyst::Result<()> {
-    // dostuff
+    amethyst::start_logger(Default::default());
+    let app_root = application_root_dir()?;
+    let display_config_path = app_root.join("config").join("display.ron");
     Ok(())
 }
