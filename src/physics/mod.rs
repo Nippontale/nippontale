@@ -68,6 +68,8 @@ impl From<Handle<Image>> for MainCharacter {
             transform: Transform::from_xyz(200., 100., 0.), 
             texture, 
             sprite: Sprite { custom_size: Some(Vec2::new(128., 128.)), ..Default::default()},
+            sync_hitbox_size: SyncHitboxSize { sync: false },
+            size: collisions::HitboxSize { size: Size { width: 64., height: 64.}},
             ..Default::default()
         }
     }
