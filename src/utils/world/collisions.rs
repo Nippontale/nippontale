@@ -49,7 +49,7 @@ impl Edge {
             Right => ent.1.translation.x + ent.0.size.width/2.,
             Left => ent.1.translation.x - ent.0.size.width/2.
         };
-        eprintln!("{:?} of ({}, {}) w: {}, h: {} = {}", self, ent.1.translation.x, ent.1.translation.y, ent.0.size.width, ent.0.size.height, v);
+        //eprintln!("{:?} of ({}, {}) w: {}, h: {} = {}", self, ent.1.translation.x, ent.1.translation.y, ent.0.size.width, ent.0.size.height, v);
         v
     }
 }
@@ -74,13 +74,13 @@ pub type cancollide<'a> = (&'a HitboxSize, &'a Transform);
 
 fn withinx(a: (f32, f32), b: cancollide<'_>) -> bool {
     let x = a.0 <= right(b) && a.0 >= left(b);
-    eprintln!("Checking pos: ({}, {}), x: within [{}, {}]  = {}", a.0, a.1, left(b), right(b), x);
+    //eprintln!("Checking pos: ({}, {}), x: within [{}, {}]  = {}", a.0, a.1, left(b), right(b), x);
     x
 }
 
 fn withiny(a: (f32, f32), b: cancollide<'_>) -> bool {
     let x = a.1 <= top(b) && a.1 >= bottom(b);
-    eprintln!("Checking pos: ({}, {}), y: within [{}, {}]  = {}", a.0, a.1, bottom(b), top(b), x);
+    //eprintln!("Checking pos: ({}, {}), y: within [{}, {}]  = {}", a.0, a.1, bottom(b), top(b), x);
     x
 }
 
