@@ -3,6 +3,5 @@ name = "nippontale"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies.amethyst]
-version = "0.15"
-features = ["vulkan"]
+[dependencies]
+bevy = "0.7"
