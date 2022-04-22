@@ -2,7 +2,8 @@ use bevy::prelude::*;
 
 pub mod collisions;
 
-use collisions::{HitboxSize, touching};
+pub use collisions::HitboxSize;
+use collisions::touching;
 
 #[derive(Component, Default)]
 pub struct PlayerControlled {
@@ -23,6 +24,17 @@ impl Default for Moving {
     }
 }
 
+
+#[derive(Component)]
+pub struct SyncHitboxSize {
+    sync: bool
+}
+
+impl Default for SyncHitboxSize {
+    fn default() -> Self {
+        return SyncHitboxSize { sync: true }
+    }
+}
 #[derive(Bundle, Default)]
 pub struct MainCharacter {
     pub player_controlled: PlayerControlled,
@@ -32,7 +44,20 @@ pub struct MainCharacter {
     pub sprite: Sprite,
     pub moving: Moving,
     pub texture: Handle<Image>,
-    pub visibility: Visibility
+    pub visibility: Visibility,
+    pub sync_hitbox_size: SyncHitboxSize
+}
+
+
+#[derive(Bundle, Default)]
+pub struct HitboxSprite {
+    pub transform: Transform,
+    pub global_transform: GlobalTransform,
+    pub size: collisions::HitboxSize,
+    pub sprite: Sprite, 
+    pub texture: Handle<Image>,
+    pub visibility: Visibility,
+    pub sync_hitbox_size: SyncHitboxSize
 }
 
 impl From<Handle<Image>> for MainCharacter {
@@ -42,8 +67,6 @@ impl From<Handle<Image>> for MainCharacter {
             PlayerControlled { controlled: true }, 
             transform: Transform::from_xyz(200., 100., 0.), 
             texture, 
-            size: HitboxSize { size: Size { width: 128., height: 128. } }, // size for collision calculation 
-            //TODO: system to update size based on sprite size 
             sprite: Sprite { custom_size: Some(Vec2::new(128., 128.)), ..Default::default()},
             ..Default::default()
         }

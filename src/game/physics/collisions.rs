@@ -9,6 +9,7 @@ pub struct Blocking;
 pub struct HitboxSize {
     pub size: Size
 }
+
 #[derive(Bundle, Default)]
 pub struct Hitbox {
     pub transform: Transform,

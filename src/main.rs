@@ -3,9 +3,7 @@
 
 use bevy::prelude::*;
 
-pub mod utils;
-pub mod imp;
-pub mod base;
+pub mod game;
 
 /// main function
 fn main() {
@@ -16,8 +14,9 @@ fn main() {
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
-        .add_startup_system(utils::setup)
-        .add_system(utils::world::player_movement)
-        .add_system(utils::window_size_update)
+        .add_startup_system(game::setup)
+        .add_system(game::physics::player_movement)
+        .add_system(game::window_size_update)
+        .add_system(game::sync_hitbox_with_sprite)
         .run();
 }
