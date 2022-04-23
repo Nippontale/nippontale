@@ -3,6 +3,7 @@ use bevy::prelude::*;
 pub mod collisions;
 
 pub use collisions::HitboxSize;
+pub use collisions::HitboxBundle;
 use collisions::touching;
 
 use crate::Logger;
@@ -29,7 +30,7 @@ impl Default for Moving {
 
 #[derive(Component)]
 pub struct SyncHitboxSize {
-    sync: bool
+    pub sync: bool
 }
 
 impl Default for SyncHitboxSize {
@@ -47,19 +48,13 @@ pub struct MainCharacter {
     pub moving: Moving,
     pub texture: Handle<Image>,
     pub visibility: Visibility,
-    pub sync_hitbox_size: SyncHitboxSize
+    pub sync_hitbox_size: SyncHitboxSize,
+    pub touching: Touching
 }
 
-
-#[derive(Bundle, Default)]
-pub struct HitboxSprite {
-    pub transform: Transform,
-    pub global_transform: GlobalTransform,
-    pub size: collisions::HitboxSize,
-    pub sprite: Sprite, 
-    pub texture: Handle<Image>,
-    pub visibility: Visibility,
-    pub sync_hitbox_size: SyncHitboxSize
+#[derive(Component, Default)]
+pub struct Touching {
+    savepoint: bool
 }
 
 impl From<Handle<Image>> for MainCharacter {
@@ -82,10 +77,10 @@ impl From<Handle<Image>> for MainCharacter {
 /// 1. Implement acceleration
 /// 2. Implement better collisions
 pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>, 
-    mut ply: Query<(&mut Transform, &PlayerControlled, &Moving, &Sprite, &HitboxSize)>,
+    mut ply: Query<(&mut Transform, &PlayerControlled, &Moving, &Sprite, &HitboxSize, &mut Touching)>,
     mut logger: ResMut<Logger>, 
-    mut other: Query<(&Transform, &HitboxSize), Without<PlayerControlled>>) {
-    for (mut tr, pc, mv, sp, hbsize) in ply.iter_mut() {
+    mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>), Without<PlayerControlled>>) {
+    for (mut tr, pc, mv, sp, hbsize, mut tch) in ply.iter_mut() {
         if pc.controlled {
             let mut ydelta = 0f32;
             let mut xdelta = 0f32;
@@ -105,11 +100,16 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             tr.translation.y += (ydelta*mv.maxspeed);
             tr.translation.x += (xdelta*mv.maxspeed);
             if (xdelta != 0. || ydelta != 0.) {
-                for (otr, ohbsize) in other.iter_mut() {
+                tch.savepoint = false;
+                for (otr, ohbsize, svpt) in other.iter_mut() {
                     if touching((hbsize, &tr), (ohbsize, otr)) || touching((ohbsize, otr), (hbsize, &tr)) {
-                        logger.warn("Collision!");
+                        logger.info("Collision!");
                         tr.translation.x = prev.0;
                         tr.translation.y = prev.1;
+                        if let Some(is_svpt) = svpt {
+                            logger.warn("Touching save point!");
+                            tch.savepoint = true
+                        }
                         break;
                     }
                 }

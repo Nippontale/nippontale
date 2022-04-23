@@ -7,25 +7,32 @@ use bevy::{prelude::*, ecs::event::Events, window::WindowResized};
 
 pub mod physics;
 pub mod utils;
+pub mod events;
 
+use physics::SyncHitboxSize;
 pub use utils::logging::{Logger, logging_system};
 
 mod graphics;
 
-use physics::collisions::Hitbox;
+use physics::collisions::HitboxBundle;
 
 
 /// game setup
 /// TODO: split into multiple setup functions
-pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<WindowDescriptor>) {
+pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<WindowDescriptor>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,) {
+    let texture_handle= asset_server.load("savesheet.png");
+    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(22.5, 25.), 2, 1);
+    let texture_atlas_handle = texture_atlases.add(texture_atlas);
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands
+        .spawn_bundle(SpriteSheetBundle {
+            texture_atlas: texture_atlas_handle,
+            transform: Transform::from_xyz(-50., -50., 0.),
+            sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(128., 128.)), ..Default::default()},
+            ..default()
+        }).insert_bundle(HitboxBundle::default()).insert(events::Savepoint {})
+        .insert_bundle(graphics::AnimatedBundle::from_seconds(0.3, true));
     commands.spawn_bundle(physics::MainCharacter::from(asset_server.load("DEF.png")));
-    commands.spawn_bundle(physics::HitboxSprite {
-        texture: asset_server.load("DEF.png"),
-        transform: Transform::from_xyz(0., 0., 0.),
-        sprite: Sprite { custom_size: Some(Vec2::new(100., 100.)), ..Default::default()},
-        ..Default::default()
-    });
     // right edge
 }
 /// prevent window resize from breaking the game
@@ -42,12 +49,25 @@ pub fn window_size_update(resize: Res<Events<WindowResized>>, mut win: ResMut<Wi
     }
 }
 
-pub fn sync_hitbox_with_sprite(mut q: Query<(&mut physics::HitboxSize, &Sprite)>) {
-    for (mut hbsize, spr) in q.iter_mut() {
-        if let Some(custom_size) = spr.custom_size {
-            hbsize.size.width = custom_size[0];
-            hbsize.size.height = custom_size[1];
-        } 
+pub fn sync_hitbox_with_sprite(mut q: Query<(&mut physics::HitboxSize, &Sprite, &SyncHitboxSize)>) {
+    for (mut hbsize, spr, sync) in q.iter_mut() {
+        if sync.sync {
+            if let Some(custom_size) = spr.custom_size {
+                hbsize.size.width = custom_size[0];
+                hbsize.size.height = custom_size[1];
+            } 
+        }   
+    }
+}
+
+pub fn sync_hitbox_with_atlassprite(mut q: Query<(&mut physics::HitboxSize, &TextureAtlasSprite, &SyncHitboxSize)>) {
+    for (mut hbsize, spr, sync) in q.iter_mut() {
+        if sync.sync {
+            if let Some(custom_size) = spr.custom_size {
+                hbsize.size.width = custom_size[0];
+                hbsize.size.height = custom_size[1];
+            } 
+        }   
     }
 }
 
@@ -68,5 +88,7 @@ fn main() {
         .add_system(logging_system)
         .add_system(window_size_update)
         .add_system(sync_hitbox_with_sprite)
+        .add_system(sync_hitbox_with_atlassprite)
+        .add_system(graphics::animate_sprite)
         .run();
 }

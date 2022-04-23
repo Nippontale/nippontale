@@ -4,6 +4,8 @@ use bevy::prelude::*;
 
 use crate::Logger;
 
+use super::SyncHitboxSize;
+
 #[derive(Component, Default)]
 pub struct Blocking;
 
@@ -13,16 +15,15 @@ pub struct HitboxSize {
 }
 
 #[derive(Bundle, Default)]
-pub struct Hitbox {
-    pub transform: Transform,
+pub struct HitboxBundle {
     pub size: HitboxSize,
+    pub sync: SyncHitboxSize,
     pub blocking: Blocking
 }
 
-impl Hitbox {
+impl HitboxBundle {
     pub fn rect(x: f32, y: f32, w: f32, h: f32) -> Self {
-        Hitbox {
-            transform: Transform::from_xyz(x, y, 0.0), 
+        HitboxBundle {
             size: HitboxSize { size: Size { width: w, height: h} }, 
             ..Default::default() 
         }
