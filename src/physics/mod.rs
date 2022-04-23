@@ -52,7 +52,7 @@ pub struct MainCharacter {
     pub touching: Touching
 }
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Touching {
     savepoint: bool
 }
