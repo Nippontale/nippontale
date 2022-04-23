@@ -5,6 +5,8 @@ pub mod collisions;
 pub use collisions::HitboxSize;
 use collisions::touching;
 
+use crate::Logger;
+
 #[derive(Component, Default)]
 pub struct PlayerControlled {
     pub controlled: bool
@@ -80,7 +82,8 @@ impl From<Handle<Image>> for MainCharacter {
 /// 1. Implement acceleration
 /// 2. Implement better collisions
 pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>, 
-    mut ply: Query<(&mut Transform, &PlayerControlled, &Moving, &Sprite, &HitboxSize)>, 
+    mut ply: Query<(&mut Transform, &PlayerControlled, &Moving, &Sprite, &HitboxSize)>,
+    mut logger: ResMut<Logger>, 
     mut other: Query<(&Transform, &HitboxSize), Without<PlayerControlled>>) {
     for (mut tr, pc, mv, sp, hbsize) in ply.iter_mut() {
         if pc.controlled {
@@ -100,10 +103,11 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             }
             let prev = (tr.translation.x, tr.translation.y);
             tr.translation.y += (ydelta*mv.maxspeed);
-            tr.translation.x += (xdelta*mv.maxspeed); // replace both mv.maxspeed with mv.speed and impl acceleration
+            tr.translation.x += (xdelta*mv.maxspeed);
             if (xdelta != 0. || ydelta != 0.) {
                 for (otr, ohbsize) in other.iter_mut() {
                     if touching((hbsize, &tr), (ohbsize, otr)) || touching((ohbsize, otr), (hbsize, &tr)) {
+                        logger.warn("Collision!");
                         tr.translation.x = prev.0;
                         tr.translation.y = prev.1;
                         break;

@@ -1,10 +1,14 @@
 #![allow(clippy::all)]
 #![allow(warnings)]
+#![feature(slice_take)]
 
 use bevy::prelude::*;
 use bevy::{prelude::*, ecs::event::Events, window::WindowResized};
 
 pub mod physics;
+pub mod utils;
+
+pub use utils::logging::{Logger, logging_system};
 
 mod graphics;
 
@@ -55,9 +59,13 @@ fn main() {
             height: 800.0,
             ..Default::default()
         })
+        .insert_resource(
+            Logger::default()
+        )
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system(physics::player_movement)
+        .add_system(logging_system)
         .add_system(window_size_update)
         .add_system(sync_hitbox_with_sprite)
         .run();
