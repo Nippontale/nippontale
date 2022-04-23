@@ -19,7 +19,10 @@ use physics::collisions::HitboxBundle;
 
 /// game setup
 /// TODO: split into multiple setup functions
+/// mostly for testing purposes rn
 pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<WindowDescriptor>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,) {
+    // obtain the spritesheet and create the texture atlas
+    // this should be made into its own function
     let texture_handle= asset_server.load("savesheet.png");
     let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(22.5, 25.), 2, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
@@ -30,7 +33,18 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<Wi
             transform: Transform::from_xyz(-50., -50., 0.),
             sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(128., 128.)), ..Default::default()},
             ..default()
-        }).insert_bundle(HitboxBundle::default()).insert(events::Savepoint {})
+        })
+        // HitboxBundle to take care of player - entity collisions
+        // this will auto sync with the texture atlas sprite's size
+        // so we simply use default.
+        .insert_bundle(HitboxBundle::default())
+        // save point event marker, marks this entity 
+        // as a save point so it can be used as so
+        // by the player.
+        .insert(events::Savepoint {})
+        // animated bundle to animate the spritesheet 
+        // changes sprite every (duration)s 
+        // and repeats if (repeating) is set to true
         .insert_bundle(graphics::AnimatedBundle::from_seconds(0.3, true));
     commands.spawn_bundle(physics::MainCharacter::from(asset_server.load("DEF.png")));
     // right edge
