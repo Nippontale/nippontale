@@ -62,7 +62,7 @@ impl From<Handle<Image>> for MainCharacter {
         MainCharacter {
             player_controlled:  
             PlayerControlled { controlled: true }, 
-            transform: Transform::from_xyz(200., 100., 0.), 
+            transform: Transform::from_xyz(200., 100., 5.), 
             texture, 
             sprite: Sprite { custom_size: Some(Vec2::new(128., 128.)), ..Default::default()},
             sync_hitbox_size: SyncHitboxSize { sync: false },
