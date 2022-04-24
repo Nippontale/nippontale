@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-#[derive(Component, Deref, DerefMut)]
+#[derive(Component, Deref, DerefMut, Default)]
 pub struct AnimationTimer(pub Timer);
 
 pub fn animate_sprite(
