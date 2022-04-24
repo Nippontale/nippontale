@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::prelude::*;
 
 pub mod collisions;
 
@@ -49,12 +50,13 @@ pub struct MainCharacter {
     pub texture: Handle<Image>,
     pub visibility: Visibility,
     pub sync_hitbox_size: SyncHitboxSize,
-    pub touching: Touching
+    pub touching: Touching,
+    pub animation_timer: AnimationTimer
 }
 
 #[derive(Component, Default)]
 pub struct Touching {
-    savepoint: bool
+    pub savepoint: bool
 }
 
 impl From<Handle<Image>> for MainCharacter {
@@ -67,6 +69,7 @@ impl From<Handle<Image>> for MainCharacter {
             sprite: Sprite { custom_size: Some(Vec2::new(128., 128.)), ..Default::default()},
             sync_hitbox_size: SyncHitboxSize { sync: false },
             size: collisions::HitboxSize { size: Size { width: 64., height: 64.}},
+            animation_timer: crate::graphics::AnimationTimer(Timer::from_seconds(1., true)),
             ..Default::default()
         }
     }
@@ -84,18 +87,8 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
         if pc.controlled {
             let mut ydelta = 0f32;
             let mut xdelta = 0f32;
-            if keys.pressed(KeyCode::S) {
-                ydelta -= 1.;
-            } 
-            if keys.pressed(KeyCode::W) {
-                ydelta += 1.;
-            }
-            if keys.pressed(KeyCode::A) {
-                xdelta -= 1.;
-            }
-            if keys.pressed(KeyCode::D) {
-                xdelta += 1.;
-            }
+            for v in [(KeyCode::S, -1.), (KeyCode::W, 1.)] { if keys.pressed(v.0) { ydelta += v.1 }}
+            for v in [(KeyCode::A, -1.), (KeyCode::D, 1.)] { if keys.pressed(v.0) { xdelta += v.1 }}
             let prev = (tr.translation.x, tr.translation.y);
             tr.translation.y += (ydelta*mv.maxspeed);
             tr.translation.x += (xdelta*mv.maxspeed);
@@ -107,7 +100,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         tr.translation.x = prev.0;
                         tr.translation.y = prev.1;
                         if let Some(is_svpt) = svpt {
-                            logger.warn("Touching save point!");
+                            logger.info("Touching save point!");
                             tch.savepoint = true
                         }
                         break;

@@ -8,6 +8,7 @@ use bevy::{prelude::*, ecs::event::Events, window::WindowResized};
 pub mod physics;
 pub mod utils;
 pub mod events;
+pub mod prelude;
 
 use physics::SyncHitboxSize;
 pub use utils::logging::{Logger, logging_system};
@@ -104,5 +105,6 @@ fn main() {
         .add_system(sync_hitbox_with_sprite)
         .add_system(sync_hitbox_with_atlassprite)
         .add_system(graphics::animate_sprite)
+        .add_system(events::player_use_input)
         .run();
 }

@@ -1,6 +1,7 @@
 use std::panic::RefUnwindSafe;
 
 use bevy::prelude::*;
+use crate::prelude::*;
 
 use crate::Logger;
 
@@ -27,33 +28,6 @@ impl HitboxBundle {
             size: HitboxSize { size: Size { width: w, height: h} }, 
             ..Default::default() 
         }
-    }
-}
-
-#[derive(Debug)]
-pub enum Edge {
-    Bottom,
-    Top,
-    Right,
-    Left
-}
-
-pub enum Corner {
-    Topright,
-    Topleft,
-    Bottomright,
-    Bottomleft
-}
-
-impl Edge {
-    fn of(&self, ent: cancollide<'_>) -> f32 {
-        let v = match self {
-            Bottom => ent.1.translation.y - ent.0.size.height/2.,
-            Top => ent.1.translation.y + ent.0.size.height/2.,
-            Right => ent.1.translation.x + ent.0.size.width/2.,
-            Left => ent.1.translation.x - ent.0.size.width/2.
-        };
-        v
     }
 }
 
