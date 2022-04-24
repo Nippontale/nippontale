@@ -56,7 +56,8 @@ pub struct MainCharacter {
 
 #[derive(Component, Default)]
 pub struct Touching {
-    pub savepoint: bool
+    pub savepoint: bool,
+    pub in_scene: bool
 }
 
 impl From<Handle<Image>> for MainCharacter {
@@ -66,9 +67,9 @@ impl From<Handle<Image>> for MainCharacter {
             PlayerControlled { controlled: true }, 
             transform: Transform::from_xyz(200., 100., 5.), 
             texture, 
-            sprite: Sprite { custom_size: Some(Vec2::new(128., 128.)), ..Default::default()},
+            sprite: Sprite { custom_size: Some(Vec2::new(100., 120.)), ..Default::default()},
             sync_hitbox_size: SyncHitboxSize { sync: false },
-            size: collisions::HitboxSize { size: Size { width: 64., height: 64.}},
+            size: collisions::HitboxSize { size: Size { width: 25., height: 25.}},
             animation_timer: crate::graphics::AnimationTimer(Timer::from_seconds(1., true)),
             ..Default::default()
         }
@@ -82,9 +83,10 @@ impl From<Handle<Image>> for MainCharacter {
 pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>, 
     mut ply: Query<(&mut Transform, &PlayerControlled, &Moving, &Sprite, &HitboxSize, &mut Touching)>,
     mut logger: ResMut<Logger>, 
+    mut ntt: ResMut<NewTextboxText>,
     mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>), Without<PlayerControlled>>) {
     for (mut tr, pc, mv, sp, hbsize, mut tch) in ply.iter_mut() {
-        if pc.controlled {
+        if pc.controlled && !tch.in_scene {
             let mut ydelta = 0f32;
             let mut xdelta = 0f32;
             for v in [(KeyCode::S, -1.), (KeyCode::W, 1.)] { if keys.pressed(v.0) { ydelta += v.1 }}
@@ -100,7 +102,6 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         tr.translation.x = prev.0;
                         tr.translation.y = prev.1;
                         if let Some(is_svpt) = svpt {
-                            logger.info("Touching save point!");
                             tch.savepoint = true
                         }
                         break;

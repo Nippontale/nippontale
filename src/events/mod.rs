@@ -4,10 +4,28 @@ use crate::prelude::*;
 #[derive(Component)]
 pub struct Savepoint;
 
-pub fn player_use_input(keys: Res<Input<KeyCode>>, q: Query<(&PlayerControlled, &Touching)>, mut logger: ResMut<Logger>) {
-    for (ply, tch) in q.iter() {
-        if ply.controlled && tch.savepoint && keys.just_released(KeyCode::E) {
-            logger.error("PRESSED TO SAVE!")
+pub fn player_use_input(keys: Res<Input<KeyCode>>, mut q: Query<(&PlayerControlled, &mut Touching)>, mut q2: Query<(&mut Textbox, &mut Visibility)>, mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>) {
+    for (ply, mut tch) in q.iter_mut() {
+        if ply.controlled && tch.savepoint && keys.just_pressed(KeyCode::E) && !tch.in_scene {
+            tch.savepoint = false;
+            tch.in_scene = true;
+            ntt.new_text("You are filled with pride and honor!", 30.);
+            ntt.text = String::from("");
+            for (mut txb, mut vis) in q2.iter_mut() {
+                txb.active = true;
+                vis.is_visible = txb.active;
+            }
+        } else if keys.just_pressed(KeyCode::E) && ntt.complete == ntt.text && tch.in_scene {
+            for (mut txb, mut vis) in q2.iter_mut() {
+                txb.active = false;
+                vis.is_visible = txb.active;
+            }
+            ntt.is_done = false;
+            tch.in_scene = false;
+        } else if keys.just_pressed(KeyCode::E) {
+            ntt.text = ntt.complete.clone();
+            ntt.i = ntt.complete.len();
+            ntt.is_done = true;
         }
     }
 }

@@ -26,6 +26,7 @@ impl HitboxBundle {
     pub fn rect(x: f32, y: f32, w: f32, h: f32) -> Self {
         HitboxBundle {
             size: HitboxSize { size: Size { width: w, height: h} }, 
+            sync: SyncHitboxSize { sync: false },
             ..Default::default() 
         }
     }
