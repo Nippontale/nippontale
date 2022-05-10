@@ -4,7 +4,9 @@ use crate::prelude::*;
 #[derive(Component)]
 pub struct Savepoint;
 
-pub fn player_use_input(keys: Res<Input<KeyCode>>, mut q: Query<(&PlayerControlled, &mut Touching)>, mut q2: Query<(&mut Textbox, &mut Visibility, Option<&mut Text>)>, mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>) {
+pub fn player_use_input(keys: Res<Input<KeyCode>>, 
+    mut deletor: ResMut<Deletor>,
+    mut q: Query<(&PlayerControlled, &mut Touching)>, mut q2: Query<(&mut Textbox, &mut Visibility, Option<&mut Text>)>, mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>) {
     for (ply, mut tch) in q.iter_mut() {
         if ply.controlled && tch.savepoint && keys.just_pressed(KeyCode::E) && !tch.in_scene {
             tch.savepoint = false;
@@ -29,6 +31,9 @@ pub fn player_use_input(keys: Res<Input<KeyCode>>, mut q: Query<(&PlayerControll
             ntt.text = ntt.complete.clone();
             ntt.i = ntt.complete.len();
             ntt.is_done = true;
+        }
+        if keys.just_pressed(KeyCode::F) {
+            deletor.b = true
         }
     }
 }

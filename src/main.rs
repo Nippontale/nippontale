@@ -11,6 +11,7 @@ pub mod utils;
 pub mod events;
 pub mod prelude;
 pub mod dialogue;
+pub mod graphics;
 
 use prelude::*;
 
@@ -18,11 +19,33 @@ use prelude::*;
 use physics::SyncHitboxSize;
 pub use utils::logging::{Logger, logging_system};
 
-mod graphics;
 
 use physics::collisions::HitboxBundle;
 
+pub struct Deletor { 
+    b: bool
+}
 
+impl Default for Deletor {
+    fn default() -> Self {
+        Deletor { 
+            b: false
+        }
+    }
+}
+
+fn destroy_map(
+    mut commands: Commands,
+    mut deletor: ResMut<Deletor>,
+    mut query: Query<Entity, With<Map>>,
+) { 
+    if deletor.b {
+        deletor.b = false;
+        for (mut el) in query.iter_mut() {
+            commands.entity(el).despawn();
+        }
+    }
+}
 /// game setup
 /// TODO: split into multiple setup functions
 /// mostly for testing purposes rn
@@ -40,6 +63,8 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<Wi
             sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(96., 96.)), ..Default::default()},
             ..default()
         })
+        // deleted as part of the map
+        .insert(Map {})
         // HitboxBundle to take care of player - entity collisions
         // this will auto sync with the texture atlas sprite's size
         // so we simply use default.
@@ -125,12 +150,16 @@ fn main() {
         .insert_resource(
             Logger::default()
         )
+        .insert_resource(
+            Deletor::default()
+        )
         .insert_resource(NewTextboxText::new(
             0.1
         ))
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system(physics::player_movement)
+        .add_system(destroy_map)
         .add_system(logging_system)
         .add_system(window_size_update)
         .add_system(sync_hitbox_with_sprite)
