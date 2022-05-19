@@ -13,7 +13,15 @@ pub fn spawn_scene_00(mut commands: Commands,
         let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(22.5, 25.), 2, 1);
         let texture_atlas_handle = texture_atlases.add(texture_atlas);
         spawn_savepoint(&mut commands, 50., 55., texture_atlas_handle.clone());
-        //spawn_savepoint(&mut commands, -50., 55., texture_atlas_handle.clone());
-        //spawn_savepoint(&mut commands, -200., 250., texture_atlas_handle.clone());
+        let wood_plank_asset: Handle<Image> = asset_server.load("wooden-plank.png");
+        let mut spawn_wood_plank = move |x, y| {
+            spawn_pass_tile(&mut commands, x, y, 0., wood_plank_asset.clone());
+        };
+        let mut spawn_wood_planks = |v: &[(f32, f32)]| {
+            for (x, y) in v {
+                spawn_wood_plank(*x, *y);
+            }
+        };
+        spawn_wood_planks(&[(-78., 55.), (-14., 55.), (50., 55.), (114., 55.), (178., 55.)]);
     }
 }

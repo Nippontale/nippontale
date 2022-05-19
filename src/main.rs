@@ -58,7 +58,7 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<Wi
             "DEFAULT VALUE",
             TextStyle {
                 font: asset_server.load("fonts/detbubble.ttf"),
-                font_size: 40.,
+                font_size: 20.,
                 color: Color::WHITE
             },
             TextAlignment { horizontal: HorizontalAlign::Center, ..Default::default() }
@@ -117,8 +117,8 @@ pub fn sync_hitbox_with_atlassprite(mut q: Query<(&mut physics::HitboxSize, &Tex
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
-            width: 1400.0,
-            height: 800.0,
+            width: 800.0,
+            height: 600.0,
             ..Default::default()
         })
         .insert_resource(
