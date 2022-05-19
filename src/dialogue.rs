@@ -21,7 +21,7 @@ impl NewTextboxText {
             complete: String::new(),
             i: 0,
             is_done: true,
-            font_size: 40.,
+            font_size: 20.,
             time: Timer::from_seconds(s, true)
         }
     }

@@ -1,29 +1,6 @@
 use bevy::prelude::*;
 use crate::prelude::*;
 
-pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<TextureAtlas>) {
-    commands
-        .spawn_bundle(SpriteSheetBundle {
-            texture_atlas: tat,
-            transform: Transform::from_xyz(x, y, 0.),
-            sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(96., 96.)), ..Default::default()},
-            ..default()
-        })
-        // deleted as part of the map
-        .insert(Map {})
-        // HitboxBundle to take care of player - entity collisions
-        // this will auto sync with the texture atlas sprite's size
-        // so we simply use default.
-        .insert(HitboxSize { size: Size { width: 86., height: 86.} })
-        // save point event marker, marks this entity 
-        // as a save point so it can be used as so
-        // by the player.
-        .insert(events::Savepoint {})
-        // animated bundle to animate the spritesheet 
-        // changes sprite every (duration)s 
-        // and repeats if (repeating) is set to true
-        .insert_bundle(graphics::AnimatedBundle::from_seconds(0.3, true));
-}
 pub fn spawn_scene_00(mut commands: Commands, 
     mut scene_updater: ResMut<SceneUpdater>, 
     asset_server: Res<AssetServer>,
@@ -36,7 +13,15 @@ pub fn spawn_scene_00(mut commands: Commands,
         let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(22.5, 25.), 2, 1);
         let texture_atlas_handle = texture_atlases.add(texture_atlas);
         spawn_savepoint(&mut commands, 50., 55., texture_atlas_handle.clone());
-        spawn_savepoint(&mut commands, -50., 55., texture_atlas_handle.clone());
-        spawn_savepoint(&mut commands, -200., 250., texture_atlas_handle.clone());
+        let wood_plank_asset: Handle<Image> = asset_server.load("wooden-plank.png");
+        let mut spawn_wood_plank = move |x, y| {
+            spawn_pass_tile(&mut commands, x, y, 0., wood_plank_asset.clone());
+        };
+        let mut spawn_wood_planks = |v: &[(f32, f32)]| {
+            for (x, y) in v {
+                spawn_wood_plank(*x, *y);
+            }
+        };
+        spawn_wood_planks(&[(-78., 55.), (-14., 55.), (50., 55.), (114., 55.), (178., 55.)]);
     }
 }
