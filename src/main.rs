@@ -11,6 +11,7 @@ pub mod utils;
 pub mod events;
 pub mod prelude;
 pub mod dialogue;
+pub mod graphics;
 
 use prelude::*;
 
@@ -18,40 +19,38 @@ use prelude::*;
 use physics::SyncHitboxSize;
 pub use utils::logging::{Logger, logging_system};
 
-mod graphics;
 
 use physics::collisions::HitboxBundle;
 
+pub struct Deletor { 
+    pub b: bool
+}
 
+impl Default for Deletor {
+    fn default() -> Self {
+        Deletor { 
+            b: false
+        }
+    }
+}
+
+fn destroy_map(
+    mut commands: Commands,
+    mut deletor: ResMut<Deletor>,
+    mut query: Query<Entity, With<Map>>,
+) { 
+    if deletor.b {
+        deletor.b = false;
+        for (mut el) in query.iter_mut() {
+            commands.entity(el).despawn();
+        }
+    }
+}
 /// game setup
 /// TODO: split into multiple setup functions
 /// mostly for testing purposes rn
 pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<WindowDescriptor>, mut texture_atlases: ResMut<Assets<TextureAtlas>>,) {
-    // obtain the spritesheet and create the texture atlas
-    // this should be made into its own function
-    let texture_handle= asset_server.load("savesheet.png");
-    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(22.5, 25.), 2, 1);
-    let texture_atlas_handle = texture_atlases.add(texture_atlas);
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    commands
-        .spawn_bundle(SpriteSheetBundle {
-            texture_atlas: texture_atlas_handle,
-            transform: Transform::from_xyz(-50., -50., 0.),
-            sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(96., 96.)), ..Default::default()},
-            ..default()
-        })
-        // HitboxBundle to take care of player - entity collisions
-        // this will auto sync with the texture atlas sprite's size
-        // so we simply use default.
-        .insert(HitboxSize { size: Size { width: 86., height: 86.} })
-        // save point event marker, marks this entity 
-        // as a save point so it can be used as so
-        // by the player.
-        .insert(events::Savepoint {})
-        // animated bundle to animate the spritesheet 
-        // changes sprite every (duration)s 
-        // and repeats if (repeating) is set to true
-        .insert_bundle(graphics::AnimatedBundle::from_seconds(0.3, true));
     commands.spawn_bundle(physics::MainCharacter::from(asset_server.load("character.png")));
     // Text bundle for the text box
     commands.spawn_bundle(Text2dBundle {
@@ -59,7 +58,7 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<Wi
             "DEFAULT VALUE",
             TextStyle {
                 font: asset_server.load("fonts/detbubble.ttf"),
-                font_size: 40.,
+                font_size: 20.,
                 color: Color::WHITE
             },
             TextAlignment { horizontal: HorizontalAlign::Center, ..Default::default() }
@@ -118,12 +117,18 @@ pub fn sync_hitbox_with_atlassprite(mut q: Query<(&mut physics::HitboxSize, &Tex
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
-            width: 1400.0,
-            height: 800.0,
+            width: 800.0,
+            height: 600.0,
             ..Default::default()
         })
         .insert_resource(
             Logger::default()
+        )
+        .insert_resource(
+            Deletor::default()
+        )
+        .insert_resource(
+            SceneUpdater::default()
         )
         .insert_resource(NewTextboxText::new(
             0.1
@@ -131,6 +136,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system(physics::player_movement)
+        .add_system(destroy_map)
         .add_system(logging_system)
         .add_system(window_size_update)
         .add_system(sync_hitbox_with_sprite)
@@ -140,5 +146,6 @@ fn main() {
         .add_system(txb_tick)
         .add_system(graphics::animate_sprite)
         .add_system(events::player_use_input)
+        .add_system(spawn_scene_00)
         .run();
 }

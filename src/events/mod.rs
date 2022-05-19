@@ -4,12 +4,18 @@ use crate::prelude::*;
 #[derive(Component)]
 pub struct Savepoint;
 
-pub fn player_use_input(keys: Res<Input<KeyCode>>, mut q: Query<(&PlayerControlled, &mut Touching)>, mut q2: Query<(&mut Textbox, &mut Visibility, Option<&mut Text>)>, mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>) {
+pub fn player_use_input(
+    keys: Res<Input<KeyCode>>, 
+    mut deletor: ResMut<Deletor>,
+    mut scene_updater: ResMut<SceneUpdater>,
+    mut q: Query<(&PlayerControlled, &mut Touching)>, 
+    mut q2: Query<(&mut Textbox, &mut Visibility, Option<&mut Text>)>,
+    mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>) {
     for (ply, mut tch) in q.iter_mut() {
         if ply.controlled && tch.savepoint && keys.just_pressed(KeyCode::E) && !tch.in_scene {
             tch.savepoint = false;
             tch.in_scene = true;
-            ntt.new_text("You are filled with pride and honor!", 40.);
+            ntt.new_text("You are filled with pride and honor!", 20.);
             ntt.text = String::from("");
             for (mut txb, mut vis, mut txt) in q2.iter_mut() {
                 txb.active = true;
@@ -29,6 +35,13 @@ pub fn player_use_input(keys: Res<Input<KeyCode>>, mut q: Query<(&PlayerControll
             ntt.text = ntt.complete.clone();
             ntt.i = ntt.complete.len();
             ntt.is_done = true;
+        }
+        // DEBUG COMMANDS
+        if keys.just_pressed(KeyCode::F) {
+            deletor.b = true
+        }
+        if keys.just_pressed(KeyCode::G) {
+            scene_updater.b = true
         }
     }
 }

@@ -15,6 +15,9 @@ pub struct HitboxSize {
     pub size: Size
 }
 
+#[derive(Component)]
+pub struct Map; 
+
 #[derive(Bundle, Default)]
 pub struct HitboxBundle {
     pub size: HitboxSize,
