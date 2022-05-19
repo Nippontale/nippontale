@@ -9,11 +9,6 @@ use collisions::touching;
 
 use crate::Logger;
 
-#[derive(Component, Default)]
-pub struct PlayerControlled {
-    pub controlled: bool
-}
-
 #[derive(Component)]
 pub struct Moving {
     pub idle_time: f32,
@@ -30,7 +25,6 @@ impl Default for Moving {
     }
 }
 
-
 #[derive(Component)]
 pub struct SyncHitboxSize {
     pub sync: bool
@@ -41,44 +35,12 @@ impl Default for SyncHitboxSize {
         return SyncHitboxSize { sync: true }
     }
 }
-#[derive(Bundle, Default)]
-pub struct MainCharacter {
-    pub player_controlled: PlayerControlled,
-    pub transform: Transform,
-    pub global_transform: GlobalTransform,
-    pub size: collisions::HitboxSize,
-    pub sprite: TextureAtlasSprite,
-    pub texture_atlas: Handle<TextureAtlas>,
-    pub moving: Moving,
-    pub texture: Handle<Image>,
-    pub visibility: Visibility,
-    pub sync_hitbox_size: SyncHitboxSize,
-    pub touching: Touching,
-    pub animation_timer: AnimationTimer
-}
 
 #[derive(Component, Default)]
 pub struct Touching {
     pub savepoint: bool,
     pub in_scene: bool
 }
-
-impl From<Handle<TextureAtlas>> for MainCharacter {
-    fn from(texture_atlas: Handle<TextureAtlas>) -> Self {
-        MainCharacter {
-            player_controlled:  
-            PlayerControlled { controlled: true }, 
-            transform: Transform::from_xyz(200., 100., 5.), 
-            texture_atlas, 
-            sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(100., 120.)), ..Default::default()},
-            sync_hitbox_size: SyncHitboxSize { sync: false },
-            size: collisions::HitboxSize { size: Size { width: 25., height: 25.}},
-            animation_timer: crate::graphics::AnimationTimer(Timer::from_seconds(0.3, true)),
-            ..Default::default()
-        }
-    }
-}
-
 
 pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>, 
     mut ply: Query<(&mut Transform, &PlayerControlled, &mut Moving, &TextureAtlasSprite, &HitboxSize, &mut Touching)>,
