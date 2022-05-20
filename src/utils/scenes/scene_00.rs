@@ -3,9 +3,10 @@ use crate::prelude::*;
 
 pub fn spawn_scene_00(mut commands: Commands, 
     mut scene_updater: ResMut<SceneUpdater>, 
+    deletor: Res<Deletor>,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>) {
-    if scene_updater.b && scene_updater.num == 0 {
+    if scene_updater.b && scene_updater.num == 0 && !deletor.b {
         scene_updater.b = false;
         // obtain the spritesheet and create the texture atlas
         // this should be made into its own function
