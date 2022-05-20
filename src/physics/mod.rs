@@ -9,25 +9,21 @@ use collisions::touching;
 
 use crate::Logger;
 
-#[derive(Component, Default)]
-pub struct PlayerControlled {
-    pub controlled: bool
-}
-
 #[derive(Component)]
 pub struct Moving {
     pub idle_time: f32,
     pub maxspeed: f32,
     pub currentspeed: f32,
-    pub acceleration: f32
+    pub acceleration: f32,
+    pub t: bool,
+    pub direction: u8
 }
 
 impl Default for Moving {
     fn default() -> Self {
-        Moving { idle_time: 0., maxspeed: 10., currentspeed: 0., acceleration: 1. }
+        Moving { idle_time: 0., maxspeed: 10., currentspeed: 0., acceleration: 1., t: false, direction: 0}
     }
 }
-
 
 #[derive(Component)]
 pub struct SyncHitboxSize {
@@ -39,20 +35,6 @@ impl Default for SyncHitboxSize {
         return SyncHitboxSize { sync: true }
     }
 }
-#[derive(Bundle, Default)]
-pub struct MainCharacter {
-    pub player_controlled: PlayerControlled,
-    pub transform: Transform,
-    pub global_transform: GlobalTransform,
-    pub size: collisions::HitboxSize,
-    pub sprite: Sprite,
-    pub moving: Moving,
-    pub texture: Handle<Image>,
-    pub visibility: Visibility,
-    pub sync_hitbox_size: SyncHitboxSize,
-    pub touching: Touching,
-    pub animation_timer: AnimationTimer
-}
 
 #[derive(Component, Default)]
 pub struct Touching {
@@ -60,32 +42,12 @@ pub struct Touching {
     pub in_scene: bool
 }
 
-impl From<Handle<Image>> for MainCharacter {
-    fn from(texture: Handle<Image>) -> Self {
-        MainCharacter {
-            player_controlled:  
-            PlayerControlled { controlled: true }, 
-            transform: Transform::from_xyz(200., 100., 5.), 
-            texture, 
-            sprite: Sprite { custom_size: Some(Vec2::new(100., 120.)), ..Default::default()},
-            sync_hitbox_size: SyncHitboxSize { sync: false },
-            size: collisions::HitboxSize { size: Size { width: 25., height: 25.}},
-            animation_timer: crate::graphics::AnimationTimer(Timer::from_seconds(1., true)),
-            ..Default::default()
-        }
-    }
-}
-
-/// System for player controlled entities
-/// TODO:
-/// 1. Implement acceleration
-/// 2. Implement better collisions
 pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>, 
-    mut ply: Query<(&mut Transform, &PlayerControlled, &Moving, &Sprite, &HitboxSize, &mut Touching)>,
+    mut ply: Query<(&mut Transform, &PlayerControlled, &mut Moving, &TextureAtlasSprite, &HitboxSize, &mut Touching)>,
     mut logger: ResMut<Logger>, 
     mut ntt: ResMut<NewTextboxText>,
     mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>), Without<PlayerControlled>>) {
-    for (mut tr, pc, mv, sp, hbsize, mut tch) in ply.iter_mut() {
+    for (mut tr, pc, mut mv, sp, hbsize, mut tch) in ply.iter_mut() {
         if pc.controlled && !tch.in_scene {
             let mut ydelta = 0f32;
             let mut xdelta = 0f32;
@@ -95,6 +57,12 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             tr.translation.y += (ydelta*mv.maxspeed);
             tr.translation.x += (xdelta*mv.maxspeed);
             if (xdelta != 0. || ydelta != 0.) {
+                if xdelta > 0. { mv.direction = 1}
+                else if xdelta < 0. { mv.direction = 3}
+                else if ydelta > 0. { mv.direction = 0 }
+                else if ydelta < 0. {mv.direction = 2}
+                else  {mv.direction = 0};
+                mv.t = true;
                 tch.savepoint = false;
                 for (otr, ohbsize, svpt) in other.iter_mut() {
                     if touching((hbsize, &tr), (ohbsize, otr)) || touching((ohbsize, otr), (hbsize, &tr)) {
@@ -104,10 +72,13 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         if let Some(is_svpt) = svpt {
                             tch.savepoint = true
                         }
+                        mv.t = false;
                         break;
                     }
                 }
-            }  
+            } else {
+                mv.t = false;
+            }
         }
     }
 }
