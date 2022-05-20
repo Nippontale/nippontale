@@ -51,10 +51,4 @@ pub fn spawn_pass_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat:
         })
         // deleted as part of the map
         .insert(Map {});
-        // HitboxBundle to take care of player - entity collisions
-        // this will auto sync with the texture atlas sprite's size
-        // so we simply use default.
-        // save point event marker, marks this entity 
-        // as a save point so it can be used as so
-        // by the player.
 }
