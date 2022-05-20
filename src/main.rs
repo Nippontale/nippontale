@@ -11,6 +11,7 @@ pub mod utils;
 pub mod events;
 pub mod prelude;
 pub mod dialogue;
+pub mod character;
 pub mod graphics;
 
 use prelude::*;
@@ -53,7 +54,7 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<Wi
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     let texture_atlas = TextureAtlas::from_grid(asset_server.load("3-walking.png"), Vec2::new(20., 30.), 2, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
-    commands.spawn_bundle(physics::MainCharacter::from(texture_atlas_handle));
+    commands.spawn_bundle(MainCharacter::from(texture_atlas_handle));
     // Text bundle for the text box
     commands.spawn_bundle(Text2dBundle {
         text: Text::with_section(

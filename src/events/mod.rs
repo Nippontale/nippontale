@@ -12,7 +12,16 @@ pub fn player_use_input(
     mut q2: Query<(&mut Textbox, &mut Visibility, Option<&mut Text>)>,
     mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>) {
     for (ply, mut tch) in q.iter_mut() {
-        if ply.controlled && tch.savepoint && keys.just_pressed(KeyCode::E) && !tch.in_scene {
+        // This character is being controlled
+        if ply.controlled && 
+            // This character is touching a save point
+            tch.savepoint && 
+            // The player just pressed "E"
+            keys.just_pressed(KeyCode::E) && 
+            // Not currently in dialogue
+            !tch.in_scene {
+            // makes it so you are not considered to be touching the
+            // the save point anymore to prevent freaky things from happening
             tch.savepoint = false;
             tch.in_scene = true;
             ntt.new_text("You are filled with pride and honor!", 20.);
