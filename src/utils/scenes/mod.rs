@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use crate::prelude::*;
 
 pub mod scene_00;
+pub mod battle_scene_00;
 
 pub struct SceneUpdater {
     pub num: u32,
