@@ -54,19 +54,23 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
         if pc.controlled && !tch.in_scene {
             let mut ydelta = 0f32;
             let mut xdelta = 0f32;
-            for v in [(KeyCode::S, -1.), (KeyCode::W, 1.)] { if keys.pressed(v.0) { ydelta += v.1 }}
-            for v in [(KeyCode::A, -1.), (KeyCode::D, 1.)] { if keys.pressed(v.0) { xdelta += v.1 }}
+
+            for v in [(KeyCode::S, -1.), (KeyCode::W, 1.)] {if keys.pressed(v.0) { ydelta += v.1;}}
+            for v in [(KeyCode::A, -1.), (KeyCode::D, 1.)] {if keys.pressed(v.0) { xdelta += v.1;}}
+
             let prev = (tr.translation.x, tr.translation.y);
             tr.translation.y += (ydelta*mv.maxspeed);
-            events::detect_scene_change(&tr);
             tr.translation.x += (xdelta*mv.maxspeed);
             if (xdelta != 0. || ydelta != 0.) {
                 if xdelta > 0. { mv.direction = 1}
-                else if xdelta < 0. { mv.direction = 3}
+                else if xdelta < 0. { mv.direction = 3 }
                 else if ydelta > 0. { mv.direction = 0 }
-                else if ydelta < 0. {mv.direction = 2}
-                else  {mv.direction = 0};
+                else if ydelta < 0. {mv.direction = 2 }
+                else  { mv.direction = 0 };
                 mv.t = true;
+
+                
+
                 tch.savepoint = false;
                 for (otr, ohbsize, svpt) in other.iter_mut() {
                     if touching((hbsize, &tr), (ohbsize, otr)) || touching((ohbsize, otr), (hbsize, &tr)) {

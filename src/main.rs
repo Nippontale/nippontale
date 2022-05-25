@@ -150,7 +150,6 @@ fn main() {
         .add_system(graphics::animate_sprite)
         .add_system(graphics::anime_moving_char)
         .add_system(events::player_use_input)
-        .add_system(events::detect_scene_change)
         .add_system(spawn_scene_00)
         .run();
 }

@@ -56,7 +56,14 @@ pub fn player_use_input(
 }
 
 pub fn detect_scene_change(
-    &tr: Transform
+    tr: Transform,
+    // direction : { 0: y, 1: x }
+    direction: i8,
 ) {
+    match direction {
+        0 => println!("y: {:?}", tr.translation.y),
+        1 => println!("x: {:?}", tr.translation.x),
+        _ => (),
+    }
     
 }
