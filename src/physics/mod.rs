@@ -9,6 +9,8 @@ use collisions::touching;
 
 use crate::Logger;
 
+use events;
+
 #[derive(Component)]
 pub struct Moving {
     pub idle_time: f32,
@@ -21,7 +23,7 @@ pub struct Moving {
 
 impl Default for Moving {
     fn default() -> Self {
-        Moving { idle_time: 0., maxspeed: 10., currentspeed: 0., acceleration: 1., t: false, direction: 0}
+        Moving { idle_time: 0., maxspeed: 5., currentspeed: 0., acceleration: 1., t: false, direction: 0}
     }
 }
 
@@ -46,7 +48,8 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
     mut ply: Query<(&mut Transform, &PlayerControlled, &mut Moving, &TextureAtlasSprite, &HitboxSize, &mut Touching)>,
     mut logger: ResMut<Logger>, 
     mut ntt: ResMut<NewTextboxText>,
-    mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>), Without<PlayerControlled>>) {
+    mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>), Without<PlayerControlled>>
+) {
     for (mut tr, pc, mut mv, sp, hbsize, mut tch) in ply.iter_mut() {
         if pc.controlled && !tch.in_scene {
             let mut ydelta = 0f32;
@@ -55,6 +58,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             for v in [(KeyCode::A, -1.), (KeyCode::D, 1.)] { if keys.pressed(v.0) { xdelta += v.1 }}
             let prev = (tr.translation.x, tr.translation.y);
             tr.translation.y += (ydelta*mv.maxspeed);
+            events::detect_scene_change(&tr);
             tr.translation.x += (xdelta*mv.maxspeed);
             if (xdelta != 0. || ydelta != 0.) {
                 if xdelta > 0. { mv.direction = 1}

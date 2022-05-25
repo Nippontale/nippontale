@@ -1,6 +1,6 @@
 #![allow(clippy::all)]
 #![allow(warnings)]
-#![feature(slice_take)]
+// #![feature(slice_take)]
 
 use bevy::prelude::*;
 use bevy::text::Text2dBounds;
@@ -100,8 +100,8 @@ pub fn sync_hitbox_with_sprite(mut q: Query<(&mut physics::HitboxSize, &Sprite, 
             if let Some(custom_size) = spr.custom_size {
                 hbsize.size.width = custom_size[0];
                 hbsize.size.height = custom_size[1];
-            } 
-        }   
+            }
+        }
     }
 }
 
@@ -150,6 +150,7 @@ fn main() {
         .add_system(graphics::animate_sprite)
         .add_system(graphics::anime_moving_char)
         .add_system(events::player_use_input)
+        .add_system(events::detect_scene_change)
         .add_system(spawn_scene_00)
         .run();
 }

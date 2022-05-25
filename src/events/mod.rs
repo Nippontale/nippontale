@@ -54,3 +54,9 @@ pub fn player_use_input(
         }
     }
 }
+
+pub fn detect_scene_change(
+    &tr: Transform
+) {
+    
+}
