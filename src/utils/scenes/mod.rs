@@ -14,6 +14,18 @@ impl Default for SceneUpdater {
     }
 }
 
+pub fn update_scene(
+    mut commands: Commands,
+    mut deletor: ResMut<Deletor>,
+    mut updater: ResMut<SceneUpdater>,
+    mut query: Query<Entity, With<Map>>,
+) {
+    if updater.b {
+        updater.b = false;
+        deletor.b = true;
+    }
+}
+
 pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<TextureAtlas>) {
     commands
         .spawn_bundle(SpriteSheetBundle {
@@ -38,16 +50,18 @@ pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<
         .insert_bundle(graphics::AnimatedBundle::from_seconds(0.3, true));
 }
 
-pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f32, height: f32) {
+pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f32, height: f32, scene_to: i32) {
     commands
         // spawn the loading zone
         .spawn()
         // inserted a map component so it's destroyed when changing scenes
         .insert(Map {})
         // inserted a transform component for it's position
-        .insert(Transform::from_xyz(x, y, 0.))
+        .insert(Transform::from_xyz(x+width/2., y, 0.))
 
-        .insert(HitboxSize { size: Size { width, height} });
+        .insert(HitboxSize { size: Size {width, height} })
+
+        .insert(events::LoadingZone { scene_to });
 }
 
 pub fn spawn_pass_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat: Handle<Image>) {

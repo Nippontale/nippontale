@@ -16,7 +16,7 @@ pub fn spawn_scene_00(mut commands: Commands,
         let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(22.5, 25.), 2, 1);
         let texture_atlas_handle = texture_atlases.add(texture_atlas);
         spawn_savepoint(&mut commands, 50., 55., texture_atlas_handle.clone());
-        spawn_loading_zone(&mut commands, screen.width/2., 0., 75., 200.);
+        spawn_loading_zone(&mut commands, screen.width/2., 0., 75., 200., 88);
 
         let wood_plank_asset: Handle<Image> = asset_server.load("wooden-plank.png");
         let mut spawn_wood_plank = move |x, y| {
@@ -27,6 +27,17 @@ pub fn spawn_scene_00(mut commands: Commands,
                 spawn_wood_plank(*x, *y);
             }
         };
-        spawn_wood_planks(&[(-78., 55.), (-14., 55.), (50., 55.), (114., 55.), (178., 55.), (242., 55.)]);
+        // spawn_wood_planks(&[(-78., 55.), (-14., 55.), (50., 55.), (114., 55.), (178., 55.), (242., 55.)]);
+        let mut planks: Vec<(f32, f32)> = Vec::new();
+        const plank_width: f32 = 64.;
+        const nb_rows: i32 = 2;
+        const nb_columns: i32 = 10;
+
+        for y in ((-1*(nb_rows/2))..(nb_rows/2)) {
+            for x in ((-1*(nb_columns/2))..(nb_columns/2)) {
+                planks.push(((x as f32)*plank_width, (y as f32)*plank_width));
+            }
+        }
+        spawn_wood_planks(&planks)
     }
 }

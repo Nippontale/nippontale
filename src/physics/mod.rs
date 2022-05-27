@@ -48,7 +48,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
     mut ply: Query<(&mut Transform, &PlayerControlled, &mut Moving, &TextureAtlasSprite, &HitboxSize, &mut Touching)>,
     mut logger: ResMut<Logger>, 
     mut ntt: ResMut<NewTextboxText>,
-    mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>), Without<PlayerControlled>>
+    mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>, Option<&crate::events::LoadingZone>), Without<PlayerControlled>>
 ) {
     for (mut tr, pc, mut mv, sp, hbsize, mut tch) in ply.iter_mut() {
         if pc.controlled && !tch.in_scene {
@@ -72,11 +72,15 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                 
 
                 tch.savepoint = false;
-                for (otr, ohbsize, svpt) in other.iter_mut() {
+                for (otr, ohbsize, svpt, lz) in other.iter_mut() {
                     if touching((hbsize, &tr), (ohbsize, otr)) || touching((ohbsize, otr), (hbsize, &tr)) {
                         logger.info("Collision!");
                         tr.translation.x = prev.0;
                         tr.translation.y = prev.1;
+
+                        if let Some(is_lz) = lz {
+                            
+                        }
                         if let Some(is_svpt) = svpt {
                             tch.savepoint = true
                         }
@@ -90,4 +94,3 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
         }
     }
 }
-

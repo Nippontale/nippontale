@@ -20,6 +20,7 @@ use prelude::*;
 use physics::SyncHitboxSize;
 pub use utils::logging::{Logger, logging_system};
 
+use utils::scenes::update_scene;
 
 use physics::collisions::HitboxBundle;
 
@@ -47,6 +48,7 @@ fn destroy_map(
         }
     }
 }
+
 /// game setup
 /// TODO: split into multiple setup functions
 /// mostly for testing purposes rn
@@ -140,6 +142,7 @@ fn main() {
         .add_startup_system(setup)
         .add_system(physics::player_movement)
         .add_system(destroy_map)
+        .add_system(update_scene)
         .add_system(logging_system)
         .add_system(window_size_update)
         .add_system(sync_hitbox_with_sprite)
