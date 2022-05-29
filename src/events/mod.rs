@@ -6,7 +6,7 @@ pub struct Savepoint;
 
 #[derive(Component, Debug)]
 pub struct LoadingZone {
-    pub scene_to: i32,
+    pub scene_to: u32,
 }
 
 pub fn player_use_input(
