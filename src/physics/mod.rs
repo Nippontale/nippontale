@@ -50,6 +50,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
     mut ntt: ResMut<NewTextboxText>,
     mut scene_updater: ResMut<SceneUpdater>,
     mut deletor: ResMut<Deletor>,
+    screen: Res<WindowDescriptor>,
     mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>, Option<&crate::events::LoadingZone>), Without<PlayerControlled>>
 ) {
     for (mut tr, pc, mut mv, sp, hbsize, mut tch) in ply.iter_mut() {
@@ -81,6 +82,8 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         tr.translation.y = prev.1;
 
                         if let Some(is_lz) = lz {
+                            tr.translation.x = ((screen.width/2.) - hbsize.size.width)* -(tr.translation.x/tr.translation.x.abs());
+
                             deletor.b = true;
                             scene_updater.b = true;
                             scene_updater.num = is_lz.scene_to;

@@ -46,7 +46,7 @@ pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f3
         // inserted a map component so it's destroyed when changing scenes
         .insert(Map {})
         // inserted a transform component for it's position
-        .insert(Transform::from_xyz(x+width/2., y, 0.))
+        .insert(Transform::from_xyz((x.abs()+width)*(x/x.abs()), y, 0.))
 
         .insert(HitboxSize { size: Size {width, height} })
 

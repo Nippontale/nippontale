@@ -4,7 +4,7 @@ use crate::prelude::*;
 #[derive(Component)]
 pub struct Savepoint;
 
-#[derive(Component, Debug)]
+#[derive(Component)]
 pub struct LoadingZone {
     pub scene_to: u32,
 }

@@ -151,6 +151,6 @@ fn main() {
         .add_system(graphics::anime_moving_char)
         .add_system(events::player_use_input)
         .add_system(spawn_scene_00)
-        .add_system(spawn_scene_08)
+        .add_system(spawn_battle_scene_00)
         .run();
 }
