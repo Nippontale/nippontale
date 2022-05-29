@@ -48,6 +48,8 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
     mut ply: Query<(&mut Transform, &PlayerControlled, &mut Moving, &TextureAtlasSprite, &HitboxSize, &mut Touching)>,
     mut logger: ResMut<Logger>, 
     mut ntt: ResMut<NewTextboxText>,
+    mut scene_updater: ResMut<SceneUpdater>,
+    mut deletor: ResMut<Deletor>,
     mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>, Option<&crate::events::LoadingZone>), Without<PlayerControlled>>
 ) {
     for (mut tr, pc, mut mv, sp, hbsize, mut tch) in ply.iter_mut() {
@@ -79,7 +81,9 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         tr.translation.y = prev.1;
 
                         if let Some(is_lz) = lz {
-                            
+                            deletor.b = true;
+                            scene_updater.b = true;
+                            scene_updater.num = is_lz.scene_to;
                         }
                         if let Some(is_svpt) = svpt {
                             tch.savepoint = true

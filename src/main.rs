@@ -20,8 +20,6 @@ use prelude::*;
 use physics::SyncHitboxSize;
 pub use utils::logging::{Logger, logging_system};
 
-use utils::scenes::update_scene;
-
 use physics::collisions::HitboxBundle;
 
 pub struct Deletor { 
@@ -142,7 +140,6 @@ fn main() {
         .add_startup_system(setup)
         .add_system(physics::player_movement)
         .add_system(destroy_map)
-        .add_system(update_scene)
         .add_system(logging_system)
         .add_system(window_size_update)
         .add_system(sync_hitbox_with_sprite)
@@ -154,5 +151,6 @@ fn main() {
         .add_system(graphics::anime_moving_char)
         .add_system(events::player_use_input)
         .add_system(spawn_scene_00)
+        .add_system(spawn_scene_08)
         .run();
 }

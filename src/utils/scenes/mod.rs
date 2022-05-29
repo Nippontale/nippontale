@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use crate::prelude::*;
 
 pub mod scene_00;
-
+pub mod scene_08;
 pub struct SceneUpdater {
     pub num: u32,
     pub b: bool
@@ -11,18 +11,6 @@ pub struct SceneUpdater {
 impl Default for SceneUpdater {
     fn default() -> Self {
         SceneUpdater { num:  0, b: true }
-    }
-}
-
-pub fn update_scene(
-    mut commands: Commands,
-    mut deletor: ResMut<Deletor>,
-    mut updater: ResMut<SceneUpdater>,
-    mut query: Query<Entity, With<Map>>,
-) {
-    if updater.b {
-        updater.b = false;
-        deletor.b = true;
     }
 }
 
@@ -50,7 +38,7 @@ pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<
         .insert_bundle(graphics::AnimatedBundle::from_seconds(0.3, true));
 }
 
-pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f32, height: f32, scene_to: i32) {
+pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f32, height: f32, scene_to: u32) {
     commands
         // spawn the loading zone
         .spawn()
