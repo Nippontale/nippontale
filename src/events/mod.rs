@@ -4,13 +4,19 @@ use crate::prelude::*;
 #[derive(Component)]
 pub struct Savepoint;
 
+#[derive(Component)]
+pub struct LoadingZone {
+    pub scene_to: u32,
+}
+
 pub fn player_use_input(
     keys: Res<Input<KeyCode>>, 
     mut deletor: ResMut<Deletor>,
     mut scene_updater: ResMut<SceneUpdater>,
     mut q: Query<(&PlayerControlled, &mut Touching)>, 
     mut q2: Query<(&mut Textbox, &mut Visibility, Option<&mut Text>)>,
-    mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>) {
+    mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>
+) {
     for (ply, mut tch) in q.iter_mut() {
         // This character is being controlled
         if ply.controlled && 
