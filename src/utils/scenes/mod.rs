@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use crate::prelude::*;
 
 pub mod scene_00;
+pub mod battle_scene_00;
 
 pub struct SceneUpdater {
     pub num: u32,
@@ -31,7 +32,7 @@ pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: tat,
             transform: Transform::from_xyz(x, y, 0.),
-            sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(96., 96.)), ..Default::default()},
+            sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(64., 64.)), ..Default::default()},
             ..default()
         })
         // deleted as part of the map
@@ -39,7 +40,7 @@ pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<
         // HitboxBundle to take care of player - entity collisions
         // this will auto sync with the texture atlas sprite's size
         // so we simply use default.
-        .insert(HitboxSize { size: Size { width: 86., height: 86.} })
+        .insert(HitboxSize { size: Size { width: 52., height: 52.} })
         // save point event marker, marks this entity 
         // as a save point so it can be used as so
         // by the player.

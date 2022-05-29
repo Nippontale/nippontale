@@ -29,10 +29,10 @@ impl From<Handle<TextureAtlas>> for MainCharacter {
             PlayerControlled { controlled: true }, 
             transform: Transform::from_xyz(200., 100., 5.), 
             texture_atlas, 
-            sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(100., 120.)), ..Default::default()},
+            sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(75., 90.)), ..Default::default()},
             sync_hitbox_size: SyncHitboxSize { sync: false },
             size: HitboxSize { size: Size { width: 25., height: 25.}},
-            animation_timer: crate::graphics::AnimationTimer(Timer::from_seconds(0.3, true)),
+            animation_timer: crate::graphics::AnimationTimer(Timer::from_seconds(0.19, true)),
             ..Default::default()
         }
     }
