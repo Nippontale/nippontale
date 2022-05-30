@@ -10,6 +10,9 @@ use super::SyncHitboxSize;
 #[derive(Component, Default)]
 pub struct Blocking;
 
+// TODO: ADD DELTA VARIATION
+// TO ACCOUNT FOR WRONGLY
+// PLACED HITBOXES
 #[derive(Component, Default)]
 pub struct HitboxSize {
     pub size: Size
@@ -59,7 +62,7 @@ fn withinx(a: (f32, f32), b: cancollide<'_>) -> bool {
 }
 
 fn withiny(a: (f32, f32), b: cancollide<'_>) -> bool {
-    let x = a.1 <= top(b)+32. && a.1 >= bottom(b)+32.;
+    let x = a.1 <= top(b) && a.1 >= bottom(b);
     x
 }
 
