@@ -10,12 +10,11 @@ use super::SyncHitboxSize;
 #[derive(Component, Default)]
 pub struct Blocking;
 
-// TODO: ADD DELTA VARIATION
-// TO ACCOUNT FOR WRONGLY
-// PLACED HITBOXES
 #[derive(Component, Default)]
 pub struct HitboxSize {
-    pub size: Size
+    pub size: Size,
+    pub ydelta: f32,
+    pub xdelta: f32
 }
 
 #[derive(Component)]
@@ -31,7 +30,7 @@ pub struct HitboxBundle {
 impl HitboxBundle {
     pub fn rect(x: f32, y: f32, w: f32, h: f32) -> Self {
         HitboxBundle {
-            size: HitboxSize { size: Size { width: w, height: h} }, 
+            size: HitboxSize { size: Size { width: w, height: h}, xdelta: 0.,  ydelta: 0. }, 
             sync: SyncHitboxSize { sync: false },
             ..Default::default() 
         }
@@ -39,19 +38,19 @@ impl HitboxBundle {
 }
 
 fn top(ent: cancollide<'_>) -> f32 {
-    ent.1.translation.y + ent.0.size.height/2.
+    ent.1.translation.y + ent.0.size.height/2. + ent.0.ydelta
 }
 
 fn bottom(ent: cancollide<'_>) -> f32 {
-    ent.1.translation.y - ent.0.size.height/2.
+    ent.1.translation.y - ent.0.size.height/2. + ent.0.ydelta
 }
 
 fn right(ent: cancollide<'_>) -> f32 {
-    ent.1.translation.x + ent.0.size.width/2.
+    ent.1.translation.x + ent.0.size.width/2. + ent.0.xdelta
 }
 
 fn left(ent: cancollide<'_>) -> f32 {
-    ent.1.translation.x - ent.0.size.width/2.
+    ent.1.translation.x - ent.0.size.width/2. + ent.0.xdelta
 }
 
 pub type cancollide<'a> = (&'a HitboxSize, &'a Transform);

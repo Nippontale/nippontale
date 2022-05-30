@@ -29,7 +29,7 @@ pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<
         // HitboxBundle to take care of player - entity collisions
         // this will auto sync with the texture atlas sprite's size
         // so we simply use default.
-        .insert(HitboxSize { size: Size { width: 52., height: 52.} })
+        .insert(HitboxSize { size: Size { width: 52., height: 52.} , xdelta: 0., ydelta: 0. })
         // save point event marker, marks this entity 
         // as a save point so it can be used as so
         // by the player.
@@ -49,7 +49,7 @@ pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f3
         // inserted a transform component for it's position
         .insert(Transform::from_xyz((x.abs()+width)*(x/x.abs()), y, 0.))
 
-        .insert(HitboxSize { size: Size {width, height} })
+        .insert(HitboxSize { size: Size {width, height}, xdelta: 0., ydelta: 0.})
 
         .insert(events::LoadingZone { scene_to });
 }
@@ -82,6 +82,6 @@ pub fn spawn_wall_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat:
         })
         // deleted as part of the map
         .insert(Map {})
-        .insert(HitboxSize { size: Size { width: 52., height: 52.} });
+        .insert(HitboxSize { size: Size { width: 52., height: 52.}, xdelta: 0., ydelta: 32.});
 }
 

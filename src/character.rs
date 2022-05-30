@@ -31,7 +31,7 @@ impl From<Handle<TextureAtlas>> for MainCharacter {
             texture_atlas, 
             sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(75., 90.)), ..Default::default()},
             sync_hitbox_size: SyncHitboxSize { sync: false },
-            size: HitboxSize { size: Size { width: 25., height: 25.}},
+            size: HitboxSize { size: Size { width: 25., height: 25.}, xdelta: 0., ydelta: 0. },
             animation_timer: crate::graphics::AnimationTimer(Timer::from_seconds(0.19, true)),
             ..Default::default()
         }
