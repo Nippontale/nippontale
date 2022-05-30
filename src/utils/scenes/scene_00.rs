@@ -15,29 +15,34 @@ pub fn spawn_scene_00(mut commands: Commands,
         let texture_handle = asset_server.load("savesheet.png");
         let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(22.5, 25.), 2, 1);
         let texture_atlas_handle = texture_atlases.add(texture_atlas);
-        spawn_savepoint(&mut commands, 50., 55., texture_atlas_handle.clone());
-        spawn_loading_zone(&mut commands, screen.width/2., 0., 75., 200., 256);
+        spawn_loading_zone(&mut commands, screen.width/2., 0., 75., 200., 1);
+        let wood_plank_asset = asset_server.load("wooden-plank.png");
+        let brick_wall_asset = asset_server.load("brick-wall.png");
 
-        let wood_plank_asset: Handle<Image> = asset_server.load("wooden-plank.png");
-        let mut spawn_wood_plank = move |x, y| {
-            spawn_pass_tile(&mut commands, x, y, 0., wood_plank_asset.clone());
-        };
-        let mut spawn_wood_planks = |v: &[(f32, f32)]| {
-            for (x, y) in v {
-                spawn_wood_plank(*x, *y);
-            }
-        };
-        // spawn_wood_planks(&[(-78., 55.), (-14., 55.), (50., 55.), (114., 55.), (178., 55.), (242., 55.)]);
-        let mut planks: Vec<(f32, f32)> = Vec::new();
-        const plank_width: f32 = 64.;
-        const nb_rows: i32 = 2;
-        const nb_columns: i32 = 10;
+        const wall_width: f32 = 64.;
+        let mut nb_rows: i32 = 2;
+        let mut nb_columns: i32 = 12;
+        let mut z = 0.;
 
-        for y in ((-1*(nb_rows/2))..(nb_rows/2)) {
-            for x in ((-1*(nb_columns/2))..(nb_columns/2)) {
-                planks.push(((x as f32)*plank_width, (y as f32)*plank_width));
+        for y in -1*(nb_rows/2)..(nb_rows/2) {
+            for x in -1*(nb_columns/2)..(nb_columns/2) {
+                spawn_pass_tile(&mut commands, x as f32*wall_width+(wall_width*2.), y as f32*wall_width-(wall_width), z, wood_plank_asset.clone());
             }
         }
-        spawn_wood_planks(&planks)
+        nb_rows = 1;
+        z = 2.;
+
+        for y in 0..nb_rows{
+            for x in 0..nb_columns {
+                spawn_wall_tile(&mut commands, x as f32*wall_width-(wall_width*4.), y as f32*wall_width, z, brick_wall_asset.clone());;
+            }
+        }
+
+
+        for y in 0..nb_rows{
+            for x in 0..nb_columns {
+                spawn_wall_tile(&mut commands, x as f32*wall_width-(wall_width*4.), y as f32*wall_width-(wall_width*2.5), z, brick_wall_asset.clone());;
+            }
+        }
     }
 }

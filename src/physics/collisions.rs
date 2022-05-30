@@ -59,7 +59,7 @@ fn withinx(a: (f32, f32), b: cancollide<'_>) -> bool {
 }
 
 fn withiny(a: (f32, f32), b: cancollide<'_>) -> bool {
-    let x = a.1 <= top(b) && a.1 >= bottom(b);
+    let x = a.1 <= top(b)+32. && a.1 >= bottom(b)+32.;
     x
 }
 

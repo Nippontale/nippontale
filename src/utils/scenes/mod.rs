@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use crate::prelude::*;
 
 pub mod scene_00;
+pub mod scene_01;
 pub mod battle_scene_00;
 
 pub struct SceneUpdater {
@@ -67,3 +68,20 @@ pub fn spawn_pass_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat:
         // deleted as part of the map
         .insert(Map {});
 }
+
+pub fn spawn_wall_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat: Handle<Image>) {
+    commands
+        .spawn_bundle(SpriteBundle {
+        texture: tat,
+        sprite: Sprite {
+            custom_size: Some(Vec2::new(64., 64.)),
+            ..Default::default()
+        },
+        transform: Transform::from_xyz(x, y, z),
+        ..Default::default()
+        })
+        // deleted as part of the map
+        .insert(Map {})
+        .insert(HitboxSize { size: Size { width: 52., height: 52.} });
+}
+
