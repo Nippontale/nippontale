@@ -15,7 +15,6 @@ pub fn spawn_scene_00(mut commands: Commands,
         let texture_handle = asset_server.load("savesheet.png");
         let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(22.5, 25.), 2, 1);
         let texture_atlas_handle = texture_atlases.add(texture_atlas);
-        spawn_loading_zone(&mut commands, screen.width/2., 0., 75., 200., 1);
         let wood_plank_asset = asset_server.load("wooden-plank.png");
         let brick_wall_asset = asset_server.load("brick-wall.png");
 
@@ -23,6 +22,8 @@ pub fn spawn_scene_00(mut commands: Commands,
         let mut nb_rows: i32 = 2;
         let mut nb_columns: i32 = 12;
         let mut z = 0.;
+        
+        spawn_loading_zone(&mut commands, screen.width/2., 0., 75., wall_width*2., 1);
 
         for y in -1*(nb_rows/2)..(nb_rows/2) {
             for x in -1*(nb_columns/2)..(nb_columns/2) {
