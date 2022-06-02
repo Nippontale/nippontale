@@ -16,9 +16,9 @@ pub struct LoadingZone {
 }
 
 impl OnTouch { 
-    pub fn scene(scene_to: u32) -> Self {
+    pub fn scene(scene_to: u32, transition: bool) -> Self {
         OnTouch {
-            scene: Some(LoadingZone { scene_to }),
+            scene: Some(LoadingZone { scene_to, transition }),
             savepoint: None
         }
     }
