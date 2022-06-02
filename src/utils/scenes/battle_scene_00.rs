@@ -9,7 +9,7 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
     mut q: Query<(Entity), With<PlayerControlled>>,
     screen: Res<WindowDescriptor>,
 ) {
-    if scene_updater.b && scene_updater.num == 256 && !deletor.b {
+    if scene_updater.b && scene_updater.num == 257 && !deletor.b {
         scene_updater.b = false;
 
     }

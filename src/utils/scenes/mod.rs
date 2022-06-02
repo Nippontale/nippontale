@@ -33,7 +33,7 @@ pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<
         // save point event marker, marks this entity 
         // as a save point so it can be used as so
         // by the player.
-        .insert(events::Savepoint {})
+        .insert(events::OnTouch::svpt())
         // animated bundle to animate the spritesheet 
         // changes sprite every (duration)s 
         // and repeats if (repeating) is set to true
@@ -51,7 +51,7 @@ pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f3
 
         .insert(HitboxSize { size: Size {width, height}, xdelta: 0., ydelta: 0.})
 
-        .insert(events::LoadingZone { scene_to });
+        .insert(events::OnTouch::scene(scene_to));
 }
 
 pub fn spawn_pass_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat: Handle<Image>) {
