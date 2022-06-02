@@ -40,14 +40,14 @@ pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<
         .insert_bundle(graphics::AnimatedBundle::from_seconds(0.3, true));
 }
 
-pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f32, height: f32, scene_to: u32) {
+pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f32, height: f32, scene_to: u32, transition: bool) {
     commands
         // spawn the loading zone
         .spawn()
         // inserted a map component so it's destroyed when changing scenes
         .insert(Map {})
         // inserted a transform component for it's position
-        .insert(Transform::from_xyz((x.abs()+width)*(x/x.abs()), y, 0.))
+        .insert(Transform::from_xyz((x.abs()+width)*(x/x.abs()), y, -10.))
 
         .insert(HitboxSize { size: Size {width, height}, xdelta: 0., ydelta: 0.})
 

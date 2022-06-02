@@ -60,17 +60,19 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
 
             for v in [(KeyCode::S, -1.), (KeyCode::W, 1.)] {if keys.pressed(v.0) { ydelta += v.1;}}
             for v in [(KeyCode::A, -1.), (KeyCode::D, 1.)] {if keys.pressed(v.0) { xdelta += v.1;}}
-
-            let prev = (tr.translation.x, tr.translation.y);
-            tr.translation.y += (ydelta*mv.maxspeed);
-            tr.translation.x += (xdelta*mv.maxspeed);
-            if (xdelta != 0. || ydelta != 0.) {
-                if xdelta > 0. { mv.direction = 1}
-                else if xdelta < 0. { mv.direction = 3 }
-                else if ydelta > 0. { mv.direction = 0 }
-                else if ydelta < 0. {mv.direction = 2 }
-                else  { mv.direction = 0 };
-                mv.t = true;
+            
+            if xdelta != 0. || ydelta != 0. {
+                let prev = (tr.translation.x, tr.translation.y);
+                tr.translation.y += (ydelta*mv.maxspeed);
+                tr.translation.x += (xdelta*mv.maxspeed);
+                if (xdelta != 0. || ydelta != 0.) {
+                    if xdelta > 0. { mv.direction = 1}
+                    else if xdelta < 0. { mv.direction = 3 }
+                    else if ydelta > 0. { mv.direction = 0 }
+                    else if ydelta < 0. {mv.direction = 2 }
+                    else  { mv.direction = 0 };
+                    mv.t = true;
+            }
 
                 
 
@@ -80,11 +82,11 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         logger.info("Collision!");
                         tr.translation.x = prev.0;
                         tr.translation.y = prev.1;
-
                         if let Some(touched) = ontch {
-                            if let Some(is_lz) = &touched.scene {
-                                tr.translation.x = ((screen.width/2.) - hbsize.size.width)* -(tr.translation.x/tr.translation.x.abs());
-    
+                            if let Some(is_lz) = &touched.scene { 
+                                if !is_lz.transition {
+                                  tr.translation.x = ((screen.width/2.) - hbsize.size.width)* -(tr.translation.x/tr.translation.x.abs());
+                                }
                                 deletor.b = true;
                                 scene_updater.b = true;
                                 scene_updater.num = is_lz.scene_to;

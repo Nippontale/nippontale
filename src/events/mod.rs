@@ -11,6 +11,8 @@ pub struct Savepoint;
 
 pub struct LoadingZone {
     pub scene_to: u32,
+    // transitions to another scene or nah
+    pub transition: bool,
 }
 
 impl OnTouch { 
