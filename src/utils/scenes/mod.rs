@@ -51,7 +51,7 @@ pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f3
 
         .insert(HitboxSize { size: Size {width, height}, xdelta: 0., ydelta: 0.})
 
-        .insert(events::OnTouch::scene(scene_to, false));
+        .insert(events::OnTouch::scene(scene_to, transition));
 }
 
 pub fn spawn_pass_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat: Handle<Image>) {

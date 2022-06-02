@@ -34,11 +34,11 @@ pub fn player_use_input(
     keys: Res<Input<KeyCode>>, 
     mut deletor: ResMut<Deletor>,
     mut scene_updater: ResMut<SceneUpdater>,
-    mut q: Query<(&PlayerControlled, &mut Touching)>, 
+    mut q: Query<(&PlayerControlled, &mut Touching, &mut Visibility), Without<Textbox>>, 
     mut q2: Query<(&mut Textbox, &mut Visibility, Option<&mut Text>)>,
     mut logger: ResMut<Logger>, mut ntt: ResMut<NewTextboxText>
 ) {
-    for (ply, mut tch) in q.iter_mut() {
+    for (ply, mut tch, mut v) in q.iter_mut() {
         // This character is being controlled
         if ply.controlled && 
             // This character is touching a save point
@@ -78,6 +78,12 @@ pub fn player_use_input(
         }
         if keys.just_pressed(KeyCode::G) {
             scene_updater.b = true
+        }
+        if keys.just_pressed(KeyCode::R) {
+            v.is_visible = true;
+        }
+        if keys.just_pressed(KeyCode::T) {
+            v.is_visible = false;
         }
     }
 }

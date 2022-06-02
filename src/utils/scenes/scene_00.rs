@@ -25,11 +25,7 @@ pub fn spawn_scene_00(mut commands: Commands,
         
         spawn_loading_zone(&mut commands, screen.width/2., -wall_width, 100., wall_width, 1, false);
 
-        for y in -1*(nb_rows/2)..(nb_rows/2) {
-            for x in -1*(nb_columns/2)..(nb_columns/2) {
-                spawn_pass_tile(&mut commands, x as f32*wall_width+(wall_width*2.), y as f32*wall_width-(wall_width), z, wood_plank_asset.clone());
-            }
-        }
+        
         nb_rows = 1;
         z = 2.;
 
@@ -39,10 +35,18 @@ pub fn spawn_scene_00(mut commands: Commands,
             }
         }
 
-
         for y in 0..nb_rows{
             for x in 0..nb_columns {
                 spawn_wall_tile(&mut commands, x as f32*wall_width-(wall_width*4.), y as f32*wall_width-(wall_width*2.5), z, brick_wall_asset.clone());;
+            }
+        }
+        
+        nb_rows = 2;
+        z = 0.;
+
+        for y in -1*(nb_rows/2)..(nb_rows/2) {
+            for x in -1*(nb_columns/2)..(nb_columns/2) {
+                spawn_pass_tile(&mut commands, x as f32*wall_width+(wall_width*2.), y as f32*wall_width-(wall_width), z, wood_plank_asset.clone());
             }
         }
     }
