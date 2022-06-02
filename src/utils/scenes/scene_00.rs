@@ -23,7 +23,7 @@ pub fn spawn_scene_00(mut commands: Commands,
         let mut nb_columns: i32 = 12;
         let mut z = 0.;
         
-        spawn_loading_zone(&mut commands, screen.width/2., 0., 75., wall_width*2., 1);
+        spawn_loading_zone(&mut commands, screen.width/2., -wall_width, 100., wall_width, 1, false);
 
         for y in -1*(nb_rows/2)..(nb_rows/2) {
             for x in -1*(nb_columns/2)..(nb_columns/2) {

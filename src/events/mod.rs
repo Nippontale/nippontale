@@ -7,6 +7,8 @@ pub struct Savepoint;
 #[derive(Component)]
 pub struct LoadingZone {
     pub scene_to: u32,
+    // transitions to another scene or nah
+    pub transition: bool,
 }
 
 pub fn player_use_input(
