@@ -2,11 +2,30 @@ use bevy::prelude::*;
 use crate::prelude::*;
 
 #[derive(Component)]
+pub struct OnTouch {
+    pub scene: Option<LoadingZone>, 
+    pub savepoint: Option<Savepoint>
+}
+
 pub struct Savepoint;
 
-#[derive(Component)]
 pub struct LoadingZone {
     pub scene_to: u32,
+}
+
+impl OnTouch { 
+    pub fn scene(scene_to: u32) -> Self {
+        OnTouch {
+            scene: Some(LoadingZone { scene_to }),
+            savepoint: None
+        }
+    }
+    pub fn svpt() -> Self {
+        OnTouch {
+            scene: None,
+            savepoint: Some(Savepoint {})
+        }
+    }
 }
 
 pub fn player_use_input(
