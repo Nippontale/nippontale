@@ -51,7 +51,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
     mut scene_updater: ResMut<SceneUpdater>,
     mut deletor: ResMut<Deletor>,
     screen: Res<WindowDescriptor>,
-    mut other: Query<(&Transform, &HitboxSize, Option<&crate::events::Savepoint>, Option<&crate::events::LoadingZone>), Without<PlayerControlled>>
+    mut other: Query<(&Transform, &HitboxSize, Option<&OnTouch>), Without<PlayerControlled>>
 ) {
     for (mut tr, pc, mut mv, sp, hbsize, mut tch) in ply.iter_mut() {
         if pc.controlled && !tch.in_scene {
@@ -77,25 +77,25 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                 
 
                 tch.savepoint = false;
-                for (otr, ohbsize, svpt, lz) in other.iter_mut() {
+                for (otr, ohbsize, ontch) in other.iter_mut() {
                     if touching((hbsize, &tr), (ohbsize, otr)) || touching((ohbsize, otr), (hbsize, &tr)) {
                         logger.info("Collision!");
                         tr.translation.x = prev.0;
                         tr.translation.y = prev.1;
-
-                        if let Some(is_lz) = lz {
-                            if !is_lz.transition {
-                                // to flip the character to the other side
-                                tr.translation.x = ((screen.width/2.) - hbsize.size.width)* -(tr.translation.x/tr.translation.x.abs());
+                        if let Some(touched) = ontch {
+                            if let Some(is_lz) = &touched.scene { 
+                                if !is_lz.transition {
+                                  tr.translation.x = ((screen.width/2.) - hbsize.size.width)* -(tr.translation.x/tr.translation.x.abs());
+                                }
+                                deletor.b = true;
+                                scene_updater.b = true;
+                                scene_updater.num = is_lz.scene_to;
                             }
-
-                            deletor.b = true;
-                            scene_updater.b = true;
-                            scene_updater.num = is_lz.scene_to;
+                            if let Some(is_svpt) = &touched.savepoint {
+                                tch.savepoint = true
+                            }
                         }
-                        if let Some(is_svpt) = svpt {
-                            tch.savepoint = true
-                        }
+                        
                         mv.t = false;
                         break;
                     }

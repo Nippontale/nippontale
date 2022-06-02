@@ -27,7 +27,7 @@ impl From<Handle<TextureAtlas>> for MainCharacter {
         MainCharacter {
             player_controlled:  
             PlayerControlled { controlled: true }, 
-            transform: Transform::from_xyz(0., -64., 5.), 
+            transform: Transform::from_xyz(200., -70., 5.), 
             texture_atlas, 
             sprite: TextureAtlasSprite { custom_size: Some(Vec2::new(75., 90.)), ..Default::default()},
             sync_hitbox_size: SyncHitboxSize { sync: false },
