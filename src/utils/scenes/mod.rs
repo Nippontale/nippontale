@@ -7,12 +7,13 @@ pub mod battle_scene_00;
 
 pub struct SceneUpdater {
     pub num: u32,
-    pub b: bool
+    pub b: bool,
+    pub transitioning: bool,
 }
 
 impl Default for SceneUpdater {
     fn default() -> Self {
-        SceneUpdater { num:  0, b: true }
+        SceneUpdater { num:  0, b: true, transitioning: false }
     }
 }
 

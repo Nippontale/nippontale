@@ -11,8 +11,8 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
 ) {
     if scene_updater.b && scene_updater.num == 256 && !deletor.b {
         scene_updater.b = false;
-        for (mut v) in q.iter_mut() {
-            v.is_visible = false;
-        }
+        // for (mut v) in q.iter_mut() {
+        //     v.is_visible = false;
+        // }
     }
 }
