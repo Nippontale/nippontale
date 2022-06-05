@@ -13,11 +13,13 @@ pub struct SceneUpdater {
     pub current: f32,
     // current time (in frames)
     pub length: f32,
+    
+    pub transitioned: bool,
 }
 
 impl Default for SceneUpdater {
     fn default() -> Self {
-        SceneUpdater { num:  0, b: true, transitioning: false, current: 0., length: 60., }
+        SceneUpdater { num:  0, b: true, transitioning: false, current: 0., length: 240., transitioned: false}
     }
 }
 
@@ -99,9 +101,10 @@ pub fn spawn_screen_cover(mut commands: &mut Commands, tat: Handle<Image>, scree
                 color: Color::rgba(1., 1., 1., opacity),
                 ..Default::default()
             },
-            transform: Transform::from_xyz(0., 0., 999.),
+            transform: Transform::from_xyz(0., 0., 10.),
             ..Default::default()
         })
+        .insert(Map {})
         .insert(Cover {});
 
 }

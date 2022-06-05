@@ -103,6 +103,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         
                         mv.t = false;
                         break;
+                        return;
                     }
                 }
             } else {

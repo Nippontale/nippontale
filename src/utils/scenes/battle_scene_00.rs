@@ -3,7 +3,7 @@ use crate::prelude::*;
 
 pub fn spawn_battle_scene_00(mut commands: Commands, 
     mut scene_updater: ResMut<SceneUpdater>, 
-    deletor: Res<Deletor>,
+    mut deletor: ResMut<Deletor>,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut q: Query<(&mut Visibility), With<PlayerControlled>>,
@@ -18,10 +18,23 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
             for (mut c) in screen_cover.iter_mut() {
                 commands.entity(c).despawn()
             }
-            let black_screen_asset = asset_server.load("black_sreen.png");
-            spawn_screen_cover(&mut commands, black_screen_asset.clone(), screen, 0.5)
+            let black_screen_asset = asset_server.load("black-cover.png");
+            if !scene_updater.transitioned {
+                scene_updater.current += 1.;
+            } else if scene_updater.current > 0. {
+                scene_updater.current -= 1.;
+            } else {
+                scene_updater.transitioned = false;
+                scene_updater.transitioning = false;
+                return;
+            }
+            let opacity: f32 = scene_updater.current/scene_updater.length;
+            spawn_screen_cover(&mut commands, black_screen_asset.clone(), screen, opacity);
         } else if scene_updater.current == scene_updater.length {
-            ()
+            scene_updater.transitioned = true;
+            scene_updater.current -= 1.;
+            deletor.b = true;
+            scene_updater.b = true;
         }
     }
 
