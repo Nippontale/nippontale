@@ -53,6 +53,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
     screen: Res<WindowDescriptor>,
     mut other: Query<(&Transform, &HitboxSize, Option<&OnTouch>), Without<PlayerControlled>>
 ) {
+    if scene_updater.transitioning == true {return}
     for (mut tr, pc, mut mv, sp, hbsize, mut tch) in ply.iter_mut() {
         if pc.controlled && !tch.in_scene {
             let mut ydelta = 0f32;
@@ -83,13 +84,17 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         tr.translation.x = prev.0;
                         tr.translation.y = prev.1;
                         if let Some(touched) = ontch {
-                            if let Some(is_lz) = &touched.scene { 
-                                if !is_lz.transition {
-                                  tr.translation.x = ((screen.width/2.) - hbsize.size.width)* -(tr.translation.x/tr.translation.x.abs());
-                                }
-                                deletor.b = true;
-                                scene_updater.b = true;
+                            if let Some(is_lz) = &touched.scene {
                                 scene_updater.num = is_lz.scene_to;
+                                if !is_lz.transition {
+                                    tr.translation.x = ((screen.width/2.) - hbsize.size.width)* -(tr.translation.x/tr.translation.x.abs());
+                                    deletor.b = true;
+                                    scene_updater.b = true;
+                                } else {
+                                    scene_updater.transitioning = true;
+                                }
+                                
+                                
                             }
                             if let Some(is_svpt) = &touched.savepoint {
                                 tch.savepoint = true
@@ -98,6 +103,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                         
                         mv.t = false;
                         break;
+                        return;
                     }
                 }
             } else {

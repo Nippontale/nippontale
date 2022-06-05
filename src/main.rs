@@ -136,6 +136,9 @@ fn main() {
         .insert_resource(NewTextboxText::new(
             0.1
         ))
+        .insert_resource(
+            ClearColor(Color::hsla(252., 0.33, 0.18, 1.0))
+        )
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system(physics::player_movement)

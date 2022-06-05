@@ -7,12 +7,19 @@ pub mod battle_scene_00;
 
 pub struct SceneUpdater {
     pub num: u32,
-    pub b: bool
+    pub b: bool,
+    pub transitioning: bool,
+    // current time (in frames)
+    pub current: f32,
+    // current time (in frames)
+    pub length: f32,
+    
+    pub transitioned: bool,
 }
 
 impl Default for SceneUpdater {
     fn default() -> Self {
-        SceneUpdater { num:  0, b: true }
+        SceneUpdater { num:  0, b: true, transitioning: false, current: 0., length: 240., transitioned: false}
     }
 }
 
@@ -85,3 +92,33 @@ pub fn spawn_wall_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat:
         .insert(HitboxSize { size: Size { width: 52., height: 52.}, xdelta: 0., ydelta: 32.});
 }
 
+pub fn spawn_screen_cover(mut commands: &mut Commands, screen: &Res<WindowDescriptor>, opacity: f32, tat: Handle<Image>) {
+    commands
+        .spawn_bundle(SpriteBundle {
+            texture: tat,
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(screen.width, screen.height)),
+                color: Color::rgba(1., 1., 1., opacity),
+                ..Default::default()
+            },
+            transform: Transform::from_xyz(0., 0., 10.),
+            ..Default::default()
+        })
+        .insert(Cover {});
+
+}
+
+pub fn spawn_background(mut commands: &mut Commands, screen: &Res<WindowDescriptor>, tat: Handle<Image>) {
+    commands
+        .spawn_bundle(SpriteBundle {
+            texture: tat,
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(screen.width, screen.height)),
+                ..Default::default()
+            },
+            transform: Transform::from_xyz(0., 0., 0.),
+            ..Default::default()
+        })
+        .insert(Map {})
+        .insert(BG {});
+}

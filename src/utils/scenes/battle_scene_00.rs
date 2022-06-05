@@ -3,16 +3,49 @@ use crate::prelude::*;
 
 pub fn spawn_battle_scene_00(mut commands: Commands, 
     mut scene_updater: ResMut<SceneUpdater>, 
-    deletor: Res<Deletor>,
+    mut deletor: ResMut<Deletor>,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut q: Query<(&mut Visibility), With<PlayerControlled>>,
+    mut screen_cover: Query<Entity, With<Cover>>,
     screen: Res<WindowDescriptor>,
 ) {
-    if scene_updater.b && scene_updater.num == 256 && !deletor.b {
-        scene_updater.b = false;
-        for (mut v) in q.iter_mut() {
-            v.is_visible = false;
+    if scene_updater.num != 256 { return }
+    
+    if scene_updater.b && !deletor.b {
+            scene_updater.b = false;
+            // for (mut v) in q.iter_mut() {
+            //     v.is_visible = false;
+            // }
+            let battle_asset = asset_server.load("5-battle-in-progress.png");
+            spawn_background(&mut commands, &screen, battle_asset.clone());
+        }
+
+    if scene_updater.transitioning {
+        
+        if scene_updater.current < scene_updater.length {
+            for (mut c) in screen_cover.iter_mut() {
+                commands.entity(c).despawn()
+            }
+            let black_screen_asset = asset_server.load("black-cover.png");
+            if !scene_updater.transitioned {
+                scene_updater.current += 1.;
+            } else if scene_updater.current > 0. {
+                scene_updater.current -= 1.;
+            } else {
+                scene_updater.transitioned = false;
+                scene_updater.transitioning = false;
+                return;
+            }
+            let opacity: f32 = scene_updater.current/scene_updater.length;
+            spawn_screen_cover(&mut commands, &screen, opacity, black_screen_asset.clone());
+        } else if scene_updater.current == scene_updater.length {
+            scene_updater.transitioned = true;
+            scene_updater.current -= 1.;
+            deletor.b = true;
+            scene_updater.b = true;
         }
     }
+
+    
 }
