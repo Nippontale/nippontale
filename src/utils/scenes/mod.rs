@@ -92,7 +92,7 @@ pub fn spawn_wall_tile(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat:
         .insert(HitboxSize { size: Size { width: 52., height: 52.}, xdelta: 0., ydelta: 32.});
 }
 
-pub fn spawn_screen_cover(mut commands: &mut Commands, tat: Handle<Image>, screen: Res<WindowDescriptor>, opacity: f32) {
+pub fn spawn_screen_cover(mut commands: &mut Commands, screen: &Res<WindowDescriptor>, opacity: f32, tat: Handle<Image>) {
     commands
         .spawn_bundle(SpriteBundle {
             texture: tat,
@@ -104,7 +104,21 @@ pub fn spawn_screen_cover(mut commands: &mut Commands, tat: Handle<Image>, scree
             transform: Transform::from_xyz(0., 0., 10.),
             ..Default::default()
         })
-        .insert(Map {})
         .insert(Cover {});
 
+}
+
+pub fn spawn_background(mut commands: &mut Commands, screen: &Res<WindowDescriptor>, tat: Handle<Image>) {
+    commands
+        .spawn_bundle(SpriteBundle {
+            texture: tat,
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(screen.width, screen.height)),
+                ..Default::default()
+            },
+            transform: Transform::from_xyz(0., 0., 0.),
+            ..Default::default()
+        })
+        .insert(Map {})
+        .insert(BG {});
 }

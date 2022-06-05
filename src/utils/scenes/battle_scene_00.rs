@@ -11,6 +11,15 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
     screen: Res<WindowDescriptor>,
 ) {
     if scene_updater.num != 256 { return }
+    
+    if scene_updater.b && !deletor.b {
+            scene_updater.b = false;
+            // for (mut v) in q.iter_mut() {
+            //     v.is_visible = false;
+            // }
+            let battle_asset = asset_server.load("5-battle-in-progress.png");
+            spawn_background(&mut commands, &screen, battle_asset.clone());
+        }
 
     if scene_updater.transitioning {
         
@@ -29,7 +38,7 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
                 return;
             }
             let opacity: f32 = scene_updater.current/scene_updater.length;
-            spawn_screen_cover(&mut commands, black_screen_asset.clone(), screen, opacity);
+            spawn_screen_cover(&mut commands, &screen, opacity, black_screen_asset.clone());
         } else if scene_updater.current == scene_updater.length {
             scene_updater.transitioned = true;
             scene_updater.current -= 1.;
@@ -38,12 +47,5 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
         }
     }
 
-    else if scene_updater.b && !deletor.b {
-        scene_updater.b = false;
-        // for (mut v) in q.iter_mut() {
-        //     v.is_visible = false;
-        // }
-        
-        
-    }
+    
 }
