@@ -13,13 +13,13 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
     if scene_updater.num != 256 { return }
     
     if scene_updater.b && !deletor.b {
-            scene_updater.b = false;
-            // for (mut v) in q.iter_mut() {
-            //     v.is_visible = false;
-            // }
-            let battle_asset = asset_server.load("5-battle-in-progress.png");
-            spawn_background(&mut commands, &screen, battle_asset.clone());
-        }
+        scene_updater.b = false;
+        // for (mut v) in q.iter_mut() {
+        //     v.is_visible = false;
+        // }
+        let battle_asset = asset_server.load("5-battle-in-progress.png");
+        spawn_background(&mut commands, &screen, battle_asset.clone());
+    }
 
     if scene_updater.transitioning {
         
