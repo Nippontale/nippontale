@@ -137,7 +137,7 @@ fn main() {
             0.1
         ))
         .insert_resource(
-            ClearColor(Color::hsla(252., 0.33, 0.18, 1.0))
+            ClearColor(Color::hsla(252., 0.33, 0.1, 1.0))
         )
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)

@@ -8,6 +8,7 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut q: Query<(&mut Visibility), With<PlayerControlled>>,
     mut screen_cover: Query<Entity, With<Cover>>,
+    choice: Res<BattleChoice>,
     screen: Res<WindowDescriptor>,
 ) {
     if scene_updater.num != 256 { return }
@@ -16,13 +17,20 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
         scene_updater.b = false;
         // for (mut v) in q.iter_mut() {
         //     v.is_visible = false;
-        // }
-        let battle_asset = asset_server.load("5-battle-in-progress.png");
+        // };
+
+        let battle_asset = asset_server.load(match choice.choice {
+            0 => "0-battle.png",
+            1 => "1-choice-fight.png",
+            2 => "2-choice-act.png",
+            3 => "3-choice-item.png",
+            4 => "4-choice-mercy.png",
+            _ => "5-battle-in-progress.png",
+        });
         spawn_background(&mut commands, &screen, battle_asset.clone());
     }
 
     if scene_updater.transitioning {
-        
         if scene_updater.current < scene_updater.length {
             for (mut c) in screen_cover.iter_mut() {
                 commands.entity(c).despawn()
@@ -45,7 +53,5 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
             deletor.b = true;
             scene_updater.b = true;
         }
-    }
-
-    
+    }   
 }

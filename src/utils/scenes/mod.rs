@@ -23,6 +23,10 @@ impl Default for SceneUpdater {
     }
 }
 
+pub struct BattleChoice {
+    pub choice: u8,
+}
+
 pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<TextureAtlas>) {
     commands
         .spawn_bundle(SpriteSheetBundle {
