@@ -51,7 +51,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
     mut scene_updater: ResMut<SceneUpdater>,
     mut deletor: ResMut<Deletor>,
     screen: Res<WindowDescriptor>,
-    mut choice: ResMut<BattleChoice>,
+    mut battle: ResMut<Battle>,
     mut other: Query<(&Transform, &HitboxSize, Option<&OnTouch>), Without<PlayerControlled>>
 ) {
     if scene_updater.transitioning == true {return}
@@ -63,9 +63,22 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             for v in [(KeyCode::S, -1.), (KeyCode::W, 1.)] {if keys.pressed(v.0) { ydelta += v.1;}}
             for v in [(KeyCode::A, -1.), (KeyCode::D, 1.)] {if keys.pressed(v.0) { xdelta += v.1;}}
             
-            if battle.state == "choice" {
-                
+            if battle.state == 2 && battle.cool == 0 {
+                if xdelta != 0. {
+                    battle.choice += xdelta as u8;
+                    if battle.choice < 1 {
+                        battle.choice = 4;
+                    } else if battle.choice > 4 {
+                        battle.choice = 1;
+                    }
+                    battle.cool = 60;
+                    battle.change = true;
+                    println!("{:?}", battle.choice)
+                };
+            } else if battle.cool > 0 {
+                battle.cool -= 1;
             }
+            if battle.state == 2 { return }
 
             if xdelta != 0. || ydelta != 0. {
                 let prev = (tr.translation.x, tr.translation.y);

@@ -19,12 +19,51 @@ pub struct SceneUpdater {
 
 impl Default for SceneUpdater {
     fn default() -> Self {
-        SceneUpdater { num:  0, b: true, transitioning: false, current: 0., length: 240., transitioned: false}
+        SceneUpdater { num:  0, b: true, transitioning: false, current: 0., length: 240., transitioned: false }
     }
 }
 
-pub struct BattleChoice {
+#[derive(Debug)]
+pub struct Battle {
+    // State {
+    //  0: not battle
+    //  1: battle
+    //  2: choice
+    // }
+    pub state: u8,
     pub choice: u8,
+    pub change: bool,
+    pub cool: u32,
+}
+
+impl Default for Battle {
+    fn default() -> Self {
+        Battle { state: 0, choice: 0, change: false, cool: 60 }
+    }
+}
+
+pub fn check_bg_change(
+    mut commands: Commands,
+    mut battle: ResMut<Battle>,
+    asset_server: Res<AssetServer>,
+    mut q: Query<Entity, With<BG>>,
+    screen: Res<WindowDescriptor>,
+) {
+    if battle.state == 2 && battle.change {
+        battle.change = false;
+        for e in q.iter_mut() {
+            commands.entity(e).despawn();
+        }
+        let battle_asset = asset_server.load(match battle.choice {
+            0 => "0-battle.png",
+            1 => "1-choice-fight.png",
+            2 => "2-choice-act.png",
+            3 => "3-choice-item.png",
+            4 => "4-choice-mercy.png",
+            _ => "5-battle-in-progress.png",
+        });
+        spawn_background(&mut commands, &screen, battle_asset.clone_weak());
+    }
 }
 
 pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<TextureAtlas>) {
@@ -57,7 +96,7 @@ pub fn spawn_loading_zone(mut commands: &mut Commands, x: f32, y: f32, width: f3
         .spawn()
         // inserted a map component so it's destroyed when changing scenes
         .insert(Map {})
-        // inserted a transform component for it's position
+        // inserted a transform component for its position
         .insert(Transform::from_xyz((x.abs()+width)*(x/x.abs()), y, -10.))
 
         .insert(HitboxSize { size: Size {width, height}, xdelta: 0., ydelta: 0.})
@@ -102,7 +141,7 @@ pub fn spawn_screen_cover(mut commands: &mut Commands, screen: &Res<WindowDescri
             texture: tat,
             sprite: Sprite {
                 custom_size: Some(Vec2::new(screen.width, screen.height)),
-                color: Color::rgba(1., 1., 1., opacity),
+                color: Color::rgba(0., 0., 0., opacity),
                 ..Default::default()
             },
             transform: Transform::from_xyz(0., 0., 10.),

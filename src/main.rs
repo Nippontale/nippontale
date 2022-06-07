@@ -137,6 +137,9 @@ fn main() {
             0.1
         ))
         .insert_resource(
+            Battle::default()
+        )
+        .insert_resource(
             ClearColor(Color::hsla(252., 0.33, 0.1, 1.0))
         )
         .add_plugins(DefaultPlugins)
@@ -153,6 +156,7 @@ fn main() {
         .add_system(graphics::animate_sprite)
         .add_system(graphics::anime_moving_char)
         .add_system(events::player_use_input)
+        .add_system(check_bg_change)
         .add_system(spawn_scene_00)
         .add_system(spawn_scene_01)
         .add_system(spawn_battle_scene_00)
