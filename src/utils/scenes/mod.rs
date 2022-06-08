@@ -23,7 +23,6 @@ impl Default for SceneUpdater {
     }
 }
 
-#[derive(Debug)]
 pub struct Battle {
     // State {
     //  0: not battle
@@ -48,6 +47,7 @@ pub fn check_bg_change(
     asset_server: Res<AssetServer>,
     mut q: Query<Entity, With<BG>>,
     screen: Res<WindowDescriptor>,
+    image: Res<UiImage>,
 ) {
     if battle.state == 2 && battle.change {
         battle.change = false;
@@ -63,7 +63,33 @@ pub fn check_bg_change(
             5 => "5-battle-in-progress.png",
             _ => "",
         });
-        spawn_background(&mut commands, &screen, battle_asset.clone_weak());
+        spawn_background(&mut commands, &screen, battle_asset.clone());
+    }
+}
+
+pub struct BGHandle {
+    handles: Vec<Handle<Image>>,
+}
+
+impl Default for BGHandle {
+    fn default() -> Self {
+        BGHandle { handles: Vec::new() }
+    }
+}
+
+impl BGHandle {
+    pub fn battle_bg(&mut self, asset_server: &Res<AssetServer>) {
+        let bg_assets = [
+            "0-battle.png",
+            "1-choice-fight.png",
+            "2-choice-act.png",
+            "3-choice-item.png",
+            "4-choice-mercy.png",
+            "5-battle-in-progress.png",
+        ];
+        for path in bg_assets {
+            self.handles.push(asset_server.load(path))
+        }
     }
 }
 

@@ -10,9 +10,14 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
     mut screen_cover: Query<Entity, With<Cover>>,
     mut battle: ResMut<Battle>,
     screen: Res<WindowDescriptor>,
+    bg_handle: Res<BGHandle>,
 ) {
     if scene_updater.num != 256 { return }
-    
+
+    if bg_handle.handles.len() == 0 {
+        bg_handle.battle_bg(&asset_server);
+    }
+
     if scene_updater.b && !deletor.b {
         scene_updater.b = false;
         // for (mut v) in q.iter_mut() {
@@ -26,7 +31,7 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
             for (mut c) in screen_cover.iter_mut() {
                 commands.entity(c).despawn()
             }
-            let black_screen_asset = asset_server.load("black-cover.png");
+            let black_screen_asset = &asset_server.load("black-cover.png");
             if !scene_updater.transitioned {
                 scene_updater.current += 1.;
             } else if scene_updater.current > 0. {
@@ -35,7 +40,7 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
                 scene_updater.transitioned = false;
                 scene_updater.transitioning = false;
                 return;
-            }
+            };
             let opacity: f32 = scene_updater.current/scene_updater.length;
             spawn_screen_cover(&mut commands, &screen, opacity, black_screen_asset.clone());
         } else if scene_updater.current == scene_updater.length {
