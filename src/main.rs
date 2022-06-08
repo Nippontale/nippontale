@@ -140,7 +140,7 @@ fn main() {
             Battle::default()
         )
         .insert_resource(
-            ClearColor(Color::hsla(252., 0.33, 0.1, 1.0))
+            ClearColor(Color::hsla(252., 0.33, 0.05, 1.0))
         )
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)

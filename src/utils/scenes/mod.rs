@@ -53,14 +53,15 @@ pub fn check_bg_change(
         battle.change = false;
         for e in q.iter_mut() {
             commands.entity(e).despawn();
-        }
+        };
         let battle_asset = asset_server.load(match battle.choice {
             0 => "0-battle.png",
             1 => "1-choice-fight.png",
             2 => "2-choice-act.png",
             3 => "3-choice-item.png",
             4 => "4-choice-mercy.png",
-            _ => "5-battle-in-progress.png",
+            5 => "5-battle-in-progress.png",
+            _ => "",
         });
         spawn_background(&mut commands, &screen, battle_asset.clone_weak());
     }
