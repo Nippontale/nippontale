@@ -7,6 +7,7 @@ pub fn spawn_scene_01(mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     screen: Res<WindowDescriptor>,
+
 ) {
     if scene_updater.b && scene_updater.num == 1 && !deletor.b {
         scene_updater.b = false;

@@ -79,6 +79,7 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>, win: Res<Wi
         transform: Transform::from_xyz(0., -win.height/2.+120., 6.),
         ..Default::default()
     }).insert(Textbox::default());
+    
 }
 /// prevent window resize from breaking the game
 /// TODO change sizes relatively too
@@ -124,20 +125,17 @@ fn main() {
             height: 600.0,
             ..Default::default()
         })
-        .insert_resource(
-            Logger::default()
-        )
-        .insert_resource(
-            Deletor::default()
-        )
-        .insert_resource(
-            SceneUpdater::default()
-        )
+        .init_resource::<Logger>()
+        .init_resource::<Deletor>()
+        .init_resource::<SceneUpdater>()
+        .init_resource::<Battle>()
+        .init_resource::<BGHandle>()
+
         .insert_resource(NewTextboxText::new(
             0.1
         ))
         .insert_resource(
-            ClearColor(Color::hsla(252., 0.33, 0.18, 1.0))
+            ClearColor(Color::hsla(252., 0.33, 0.05, 1.0))
         )
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
@@ -153,6 +151,7 @@ fn main() {
         .add_system(graphics::animate_sprite)
         .add_system(graphics::anime_moving_char)
         .add_system(events::player_use_input)
+        .add_system(check_bg_change)
         .add_system(spawn_scene_00)
         .add_system(spawn_scene_01)
         .add_system(spawn_battle_scene_00)

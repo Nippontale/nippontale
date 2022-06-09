@@ -33,14 +33,15 @@ pub fn anime_moving_char(
         &Moving,
         &Touching
     ), With<PlayerControlled>>,
+    battle: Res<Battle>,
 ) {
     for (mut timer, mut sprite, texture_atlas_handle , mut mv, tch) in query.iter_mut() {
-        if !tch.in_scene {
+        if !tch.in_scene && battle.state == 0 {
             let v = match mv.direction {
                 0 => ("0-walking.png", 3),
                 1 => ("1-walking.png", 2),
                 2 => ("2-walking.png", 3),
-                _ => ("3-walking.png", 2)
+                _ => ("3-walking.png", 2),
             };
             let t = texture_atlases
                 .set(texture_atlas_handle, TextureAtlas::from_grid(asset_server.load(v.0), Vec2::new(20., 30.), v.1, 1));
@@ -53,7 +54,7 @@ pub fn anime_moving_char(
                 }
             } else {
                 sprite.index = 0
-            }        
+            }
         }
     }
 }

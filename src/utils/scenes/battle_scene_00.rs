@@ -1,28 +1,41 @@
 use bevy::prelude::*;
 use crate::prelude::*;
 
-pub fn spawn_battle_scene_00(mut commands: Commands, 
+pub fn spawn_battle_scene_00(
+    mut commands: Commands, 
     mut scene_updater: ResMut<SceneUpdater>, 
     mut deletor: ResMut<Deletor>,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut q: Query<(&mut Visibility), With<PlayerControlled>>,
     mut screen_cover: Query<Entity, With<Cover>>,
+    mut battle: ResMut<Battle>,
     screen: Res<WindowDescriptor>,
+    mut bg_handle: ResMut<BGHandle>,
 ) {
     if scene_updater.num != 256 { return }
-    
-    if scene_updater.b && !deletor.b {
-            scene_updater.b = false;
-            // for (mut v) in q.iter_mut() {
-            //     v.is_visible = false;
-            // }
-            let battle_asset = asset_server.load("5-battle-in-progress.png");
-            spawn_background(&mut commands, &screen, battle_asset.clone());
+
+    if bg_handle.handles.len() == 0 {
+        let bg_assets = [
+            "black-cover.png",
+            "0-battle.png",
+            "1-choice-fight.png",
+            "2-choice-act.png",
+            "3-choice-item.png",
+            "4-choice-mercy.png",
+            "5-battle-in-progress.png",
+        ];
+        for path in bg_assets {
+            bg_handle.handles.push(asset_server.load(path))
         }
+    }
+
+    if scene_updater.b && !deletor.b {
+        scene_updater.b = false;
+        
+    }   
 
     if scene_updater.transitioning {
-        
         if scene_updater.current < scene_updater.length {
             for (mut c) in screen_cover.iter_mut() {
                 commands.entity(c).despawn()
@@ -36,7 +49,7 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
                 scene_updater.transitioned = false;
                 scene_updater.transitioning = false;
                 return;
-            }
+            };
             let opacity: f32 = scene_updater.current/scene_updater.length;
             spawn_screen_cover(&mut commands, &screen, opacity, black_screen_asset.clone());
         } else if scene_updater.current == scene_updater.length {
@@ -44,8 +57,13 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
             scene_updater.current -= 1.;
             deletor.b = true;
             scene_updater.b = true;
+            for (mut v) in q.iter_mut() {
+                v.is_visible = false;
+            };
+            
+            battle.state = 2;
+            battle.choice = 0;
+            battle.change = true;
         }
-    }
-
-    
+    }   
 }

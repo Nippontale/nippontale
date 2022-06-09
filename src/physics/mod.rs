@@ -51,10 +51,18 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
     mut scene_updater: ResMut<SceneUpdater>,
     mut deletor: ResMut<Deletor>,
     screen: Res<WindowDescriptor>,
+    mut battle: ResMut<Battle>,
     mut other: Query<(&Transform, &HitboxSize, Option<&OnTouch>), Without<PlayerControlled>>
 ) {
-    if scene_updater.transitioning == true {return}
+    
     for (mut tr, pc, mut mv, sp, hbsize, mut tch) in ply.iter_mut() {
+        if scene_updater.transitioning == true {
+            if battle.state == 2 {
+                tr.translation.x = 0.;
+                tr.translation.y = -100.;
+            }
+            return
+        }
         if pc.controlled && !tch.in_scene {
             let mut ydelta = 0f32;
             let mut xdelta = 0f32;
@@ -62,6 +70,29 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             for v in [(KeyCode::S, -1.), (KeyCode::W, 1.)] {if keys.pressed(v.0) { ydelta += v.1;}}
             for v in [(KeyCode::A, -1.), (KeyCode::D, 1.)] {if keys.pressed(v.0) { xdelta += v.1;}}
             
+            if battle.state == 2 && battle.cool == 0 {
+                if xdelta != 0. {
+                    battle.choice += xdelta as i8;
+                    if battle.choice < 1 {
+                        battle.choice = 4;
+                    } else if battle.choice > 4 {
+                        battle.choice = 1;
+                    }
+                    battle.cool = 15;
+                    battle.change = true;
+                };
+            } else if battle.cool > 0 {
+                battle.cool -= 1;
+            }
+            if battle.state == 2 {
+                if keys.pressed(KeyCode::Escape) {
+                    battle.choice = 0;
+                    battle.cool = 15;
+                    battle.change = true;
+                }
+                return;
+            }
+
             if xdelta != 0. || ydelta != 0. {
                 let prev = (tr.translation.x, tr.translation.y);
                 tr.translation.y += (ydelta*mv.maxspeed);
@@ -70,7 +101,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                     if xdelta > 0. { mv.direction = 1}
                     else if xdelta < 0. { mv.direction = 3 }
                     else if ydelta > 0. { mv.direction = 0 }
-                    else if ydelta < 0. {mv.direction = 2 }
+                    else if ydelta < 0. { mv.direction = 2 }
                     else  { mv.direction = 0 };
                     mv.t = true;
             }
