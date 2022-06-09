@@ -29,15 +29,15 @@ pub struct Battle {
     //  1: battle
     //  2: choice
     // }
-    pub state: u8,
-    pub choice: u8,
+    pub state: i8,
+    pub choice: i8,
     pub change: bool,
     pub cool: u32,
 }
 
 impl Default for Battle {
     fn default() -> Self {
-        Battle { state: 0, choice: 0, change: false, cool: 60 }
+        Battle { state: 0, choice: 0, change: false, cool: 15 }
     }
 }
 
@@ -47,7 +47,6 @@ pub fn check_bg_change(
     asset_server: Res<AssetServer>,
     mut q: Query<Entity, With<BG>>,
     screen: Res<WindowDescriptor>,
-    image: Res<UiImage>,
 ) {
     if battle.state == 2 && battle.change {
         battle.change = false;
@@ -77,21 +76,21 @@ impl Default for BGHandle {
     }
 }
 
-impl BGHandle {
-    pub fn battle_bg(&mut self, asset_server: &Res<AssetServer>) {
-        let bg_assets = [
-            "0-battle.png",
-            "1-choice-fight.png",
-            "2-choice-act.png",
-            "3-choice-item.png",
-            "4-choice-mercy.png",
-            "5-battle-in-progress.png",
-        ];
-        for path in bg_assets {
-            self.handles.push(asset_server.load(path))
-        }
-    }
-}
+// impl BGHandle {
+//     pub fn battle_bg(&mut self, asset_server: Res<AssetServer>) {
+//         let bg_assets = [
+//             "0-battle.png",
+//             "1-choice-fight.png",
+//             "2-choice-act.png",
+//             "3-choice-item.png",
+//             "4-choice-mercy.png",
+//             "5-battle-in-progress.png",
+//         ];
+//         for path in bg_assets {
+//             self.handles.push(asset_server.load(path))
+//         }
+//     }
+// }
 
 pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<TextureAtlas>) {
     commands

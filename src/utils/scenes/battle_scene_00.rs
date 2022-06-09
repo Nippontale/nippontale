@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use crate::prelude::*;
 
-pub fn spawn_battle_scene_00(mut commands: Commands, 
+pub fn spawn_battle_scene_00(
+    mut commands: Commands, 
     mut scene_updater: ResMut<SceneUpdater>, 
     mut deletor: ResMut<Deletor>,
     asset_server: Res<AssetServer>,
@@ -10,20 +11,28 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
     mut screen_cover: Query<Entity, With<Cover>>,
     mut battle: ResMut<Battle>,
     screen: Res<WindowDescriptor>,
-    bg_handle: Res<BGHandle>,
+    mut bg_handle: ResMut<BGHandle>,
 ) {
     if scene_updater.num != 256 { return }
 
     if bg_handle.handles.len() == 0 {
-        bg_handle.battle_bg(&asset_server);
+        let bg_assets = [
+            "black-cover.png",
+            "0-battle.png",
+            "1-choice-fight.png",
+            "2-choice-act.png",
+            "3-choice-item.png",
+            "4-choice-mercy.png",
+            "5-battle-in-progress.png",
+        ];
+        for path in bg_assets {
+            bg_handle.handles.push(asset_server.load(path))
+        }
     }
 
     if scene_updater.b && !deletor.b {
         scene_updater.b = false;
-        // for (mut v) in q.iter_mut() {
-        //     v.is_visible = false;
-        // };
-        battle.state = 2;
+        
     }   
 
     if scene_updater.transitioning {
@@ -31,7 +40,7 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
             for (mut c) in screen_cover.iter_mut() {
                 commands.entity(c).despawn()
             }
-            let black_screen_asset = &asset_server.load("black-cover.png");
+            let black_screen_asset = asset_server.load("black-cover.png");
             if !scene_updater.transitioned {
                 scene_updater.current += 1.;
             } else if scene_updater.current > 0. {
@@ -48,7 +57,11 @@ pub fn spawn_battle_scene_00(mut commands: Commands,
             scene_updater.current -= 1.;
             deletor.b = true;
             scene_updater.b = true;
-            battle.state = 1;
+            for (mut v) in q.iter_mut() {
+                v.is_visible = false;
+            };
+            
+            battle.state = 2;
             battle.choice = 0;
             battle.change = true;
         }
