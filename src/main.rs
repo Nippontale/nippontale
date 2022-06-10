@@ -129,7 +129,7 @@ fn main() {
         .init_resource::<Deletor>()
         .init_resource::<SceneUpdater>()
         .init_resource::<Battle>()
-        .init_resource::<BGHandle>()
+        .init_resource::<AssetHandles>()
 
         .insert_resource(NewTextboxText::new(
             0.1

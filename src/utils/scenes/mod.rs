@@ -62,35 +62,23 @@ pub fn check_bg_change(
             5 => "5-battle-in-progress.png",
             _ => "",
         });
+        if battle.choice == 0 {
+            // spawn_image(&mut commands, 0.,-100., 1., asset_server.load("fight-bar.png"))
+        }
         spawn_background(&mut commands, &screen, battle_asset.clone());
     }
 }
 
-pub struct BGHandle {
+pub struct AssetHandles {
     handles: Vec<Handle<Image>>,
+    scene_saved: u32,
 }
 
-impl Default for BGHandle {
+impl Default for AssetHandles {
     fn default() -> Self {
-        BGHandle { handles: Vec::new() }
+        AssetHandles { handles: Vec::new(), scene_saved: 0 }
     }
 }
-
-// impl BGHandle {
-//     pub fn battle_bg(&mut self, asset_server: Res<AssetServer>) {
-//         let bg_assets = [
-//             "0-battle.png",
-//             "1-choice-fight.png",
-//             "2-choice-act.png",
-//             "3-choice-item.png",
-//             "4-choice-mercy.png",
-//             "5-battle-in-progress.png",
-//         ];
-//         for path in bg_assets {
-//             self.handles.push(asset_server.load(path))
-//         }
-//     }
-// }
 
 pub fn spawn_savepoint(mut commands: &mut Commands, x: f32, y: f32, tat: Handle<TextureAtlas>) {
     commands
@@ -186,6 +174,20 @@ pub fn spawn_background(mut commands: &mut Commands, screen: &Res<WindowDescript
                 ..Default::default()
             },
             transform: Transform::from_xyz(0., 0., 0.),
+            ..Default::default()
+        })
+        .insert(Map {})
+        .insert(BG {});
+}
+
+pub fn spawn_image(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat: Handle<Image>) {
+    commands
+        .spawn_bundle(SpriteBundle {
+            texture: tat,
+            sprite: Sprite {
+                ..Default::default()
+            },
+            transform: Transform::from_xyz(x, y, z),
             ..Default::default()
         })
         .insert(Map {})
