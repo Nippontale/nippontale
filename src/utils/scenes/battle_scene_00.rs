@@ -15,6 +15,24 @@ pub fn spawn_battle_scene_00(
 ) {
     if scene_updater.num != 256 { return }
 
+    if asset_handles.scene_saved != 256 {
+        asset_handles.scene_saved = 256;
+        println!("{:?}", asset_handles.handles);
+        let bg_assets = [
+            "black-cover.png",
+            "0-battle.png",
+            "1-choice-fight.png",
+            "2-choice-act.png",
+            "3-choice-item.png",
+            "4-choice-mercy.png",
+            "5-battle-in-progress.png",
+            "fight-bg.png",
+        ];
+        for path in bg_assets {
+            asset_handles.handles.push(asset_server.load(path));
+        }
+    }
+
     if scene_updater.b && !deletor.b {
         scene_updater.b = false;  
     }   
@@ -46,25 +64,9 @@ pub fn spawn_battle_scene_00(
             };
             
             battle.state = 2;
-            battle.choice = 5;
+            battle.choice = 1;
             battle.change = true;
         }
     }
 
-    if asset_handles.scene_saved != 256 {
-        asset_handles.scene_saved = 256;
-        let bg_assets = [
-            "black-cover.png",
-            "0-battle.png",
-            "1-choice-fight.png",
-            "2-choice-act.png",
-            "3-choice-item.png",
-            "4-choice-mercy.png",
-            "5-battle-in-progress.png",
-            "fight-bg.png",
-        ];
-        for path in bg_assets {
-            asset_handles.handles.push(asset_server.load(path));
-        }
-    }
 }
