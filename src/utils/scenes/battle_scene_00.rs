@@ -61,7 +61,7 @@ pub fn spawn_battle_scene_00(
             "3-choice-item.png",
             "4-choice-mercy.png",
             "5-battle-in-progress.png",
-            "fight-bar.png",
+            "fight-bg.png",
         ];
         for path in bg_assets {
             asset_handles.handles.push(asset_server.load(path));

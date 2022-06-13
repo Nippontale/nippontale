@@ -23,24 +23,6 @@ impl Default for SceneUpdater {
     }
 }
 
-pub struct Battle {
-    // State {
-    //  0: not battle
-    //  1: battle
-    //  2: choice
-    // }
-    pub state: i8,
-    pub choice: i8,
-    pub change: bool,
-    pub cool: u32,
-}
-
-impl Default for Battle {
-    fn default() -> Self {
-        Battle { state: 0, choice: 0, change: false, cool: 15 }
-    }
-}
-
 pub fn check_bg_change(
     mut commands: Commands,
     mut battle: ResMut<Battle>,
@@ -63,7 +45,7 @@ pub fn check_bg_change(
             _ => "",
         });
         if battle.choice == 0 {
-            // spawn_image(&mut commands, 0.,-100., 1., asset_server.load("fight-bar.png"))
+            spawn_image(&mut commands, 0.,-100., 1., 550., 180.,asset_server.load("fight-bg.png"))
         }
         spawn_background(&mut commands, &screen, battle_asset.clone());
     }
@@ -180,11 +162,12 @@ pub fn spawn_background(mut commands: &mut Commands, screen: &Res<WindowDescript
         .insert(BG {});
 }
 
-pub fn spawn_image(mut commands: &mut Commands, x: f32, y: f32, z: f32, tat: Handle<Image>) {
+pub fn spawn_image(mut commands: &mut Commands, x: f32, y: f32, z: f32, width: f32,height: f32, tat: Handle<Image>) {
     commands
         .spawn_bundle(SpriteBundle {
             texture: tat,
             sprite: Sprite {
+                custom_size: Some(Vec2::new(width, height)),
                 ..Default::default()
             },
             transform: Transform::from_xyz(x, y, z),

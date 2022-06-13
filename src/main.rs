@@ -13,6 +13,7 @@ pub mod prelude;
 pub mod dialogue;
 pub mod character;
 pub mod graphics;
+pub mod battle;
 
 use prelude::*;
 
