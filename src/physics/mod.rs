@@ -70,7 +70,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             for v in [(KeyCode::S, -1.), (KeyCode::W, 1.)] {if keys.pressed(v.0) { ydelta += v.1;}}
             for v in [(KeyCode::A, -1.), (KeyCode::D, 1.)] {if keys.pressed(v.0) { xdelta += v.1;}}
             
-            if battle.state == 2 && battle.cool == 0 && battle.choice != 1 {
+            if battle.state == 2 && battle.cool == 0 && battle.choice != 0 {
                 if xdelta != 0. {
                     battle.choice += xdelta as i8;
                     if battle.choice < 1 {
@@ -86,15 +86,15 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
             }
             if battle.state == 2 {
                 if keys.pressed(KeyCode::Escape) {
-                    battle.choice = 0;
+                    battle.choice = 1;
                     battle.cool = 15;
                     battle.change = true;
-                    return;
                 }
                 else if battle.choice == 1 && keys.pressed(KeyCode::Return) {
                     battle.choice = 0;
                     battle.change = true;
                 }
+                return;
                 
             }
 
@@ -109,7 +109,7 @@ pub fn player_movement(keys: Res<Input<KeyCode>>, win: Res<WindowDescriptor>,
                     else if ydelta < 0. { mv.direction = 2 }
                     else  { mv.direction = 0 };
                     mv.t = true;
-            }
+                }
 
                 
 

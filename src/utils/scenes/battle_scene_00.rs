@@ -16,10 +16,9 @@ pub fn spawn_battle_scene_00(
     if scene_updater.num != 256 { return }
 
     if asset_handles.scene_saved != 256 {
+        // TODO: put into function, remove duplicates in handles and remove when far away
         asset_handles.scene_saved = 256;
-        println!("{:?}", asset_handles.handles);
         let bg_assets = [
-            "black-cover.png",
             "0-battle.png",
             "1-choice-fight.png",
             "2-choice-act.png",
@@ -29,7 +28,7 @@ pub fn spawn_battle_scene_00(
             "fight-bg.png",
         ];
         for path in bg_assets {
-            asset_handles.handles.push(asset_server.load(path));
+            asset_handles.handles.push(asset_server.load(path))
         }
     }
 

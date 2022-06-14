@@ -17,6 +17,7 @@ pub fn spawn_scene_01(mut commands: Commands,
         let bg_assets = [
             "wooden-plank.png",
             "brick-wall.png",
+            "black-cover.png",
         ];
         for path in bg_assets {
             asset_handles.handles.push(asset_server.load(path))

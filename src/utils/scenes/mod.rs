@@ -46,7 +46,7 @@ pub fn check_bg_change(
         });
         if battle.choice == 0 {
             spawn_image(&mut commands, 0., -100., 1., 550., 180.,asset_server.load("fight-bg.png"));
-            spawn_image(&mut commands, 0., 0., 2., 200., 200.,asset_server.load("bar-light.png"));
+            spawn_image(&mut commands, -300., -100., 2., 200., 200.,asset_server.load("bar-light.png"));
         }
         spawn_background(&mut commands, &screen, battle_asset.clone());
     }
