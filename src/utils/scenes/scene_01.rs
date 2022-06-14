@@ -4,12 +4,27 @@ use crate::prelude::*;
 pub fn spawn_scene_01(mut commands: Commands, 
     mut scene_updater: ResMut<SceneUpdater>, 
     deletor: Res<Deletor>,
-    asset_server: Res<AssetServer>,
+    mut asset_server: ResMut<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     screen: Res<WindowDescriptor>,
+    mut asset_handles: ResMut<AssetHandles>,
 
 ) {
-    if scene_updater.b && scene_updater.num == 1 && !deletor.b {
+    if scene_updater.num != 1 { return }
+
+    if asset_handles.scene_saved != 1 {
+        // asset_handles.handles = Vec::new();
+        let bg_assets = [
+            "wooden-plank.png",
+            "brick-wall.png",
+            "black-cover.png",
+        ];
+        for path in bg_assets {
+            asset_handles.handles.push(asset_server.load(path))
+        }
+    }
+
+    if scene_updater.b && !deletor.b {
         scene_updater.b = false;
         // obtain the spritesheet and create the texture atlas
         // this should be made into its own function
@@ -34,3 +49,4 @@ pub fn spawn_scene_01(mut commands: Commands,
         }
     }
 }
+
